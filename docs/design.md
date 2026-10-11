@@ -92,6 +92,11 @@ Rendering has a configurable timeout and writes to a temporary directory. An exi
 replaced only after Graphviz succeeds. A timeout, missing executable, or malformed label produces a
 clear error and cleans up temporary output.
 
+The API and CLI also reject destinations that resolve to the input XML or associated weights before
+loading the model. Existing hard links are checked by file identity as well as path spelling. The
+statistics destination must also differ from the SVG, and statistics use an atomic replacement so a
+failed write cannot leave a partially truncated file.
+
 ## Deliberate boundaries
 
 Only tensor/data edges are drawn. Stateful ReadValue/Assign operations and their variable IDs are

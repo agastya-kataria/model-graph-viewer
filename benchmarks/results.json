@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "started_utc": "2026-10-11T11:46:24.808437+00:00",
+  "started_utc": "2026-10-11T19:16:56.179253+00:00",
   "command": "/Users/agastyakataria/Downloads/assignment/.venv/bin/python scripts/benchmark.py --models all --include-synthetic --repeats 1",
   "working_directory": "/Users/agastyakataria/Downloads/assignment",
   "environment": {
@@ -48,9 +48,9 @@
       "after_nodes": 6,
       "after_edges": 5,
       "timings": {
-        "load_construct_seconds": 0.13587604100030148,
-        "transform_seconds": 2.824999683070928e-05,
-        "render_seconds": 0.13406420899991645
+        "load_construct_seconds": 0.1395641249982873,
+        "transform_seconds": 2.6875000912696123e-05,
+        "render_seconds": 0.10630758300248999
       },
       "svg": "examples/svg/mlp.before.svg",
       "svg_bytes": 11311,
@@ -81,9 +81,9 @@
       "after_nodes": 4,
       "after_edges": 3,
       "timings": {
-        "load_construct_seconds": 0.006437500000174623,
-        "transform_seconds": 0.00027204099751543254,
-        "render_seconds": 0.1179637500026729
+        "load_construct_seconds": 0.0038569579992326908,
+        "transform_seconds": 0.00012550000246847048,
+        "render_seconds": 0.09675570899707964
       },
       "svg": "examples/svg/mlp.after.svg",
       "svg_bytes": 8623,
@@ -110,9 +110,9 @@
       "after_nodes": 9,
       "after_edges": 11,
       "timings": {
-        "load_construct_seconds": 0.004746124999655876,
-        "transform_seconds": 3.704099799506366e-05,
-        "render_seconds": 0.10670000000391155
+        "load_construct_seconds": 0.004493540996918455,
+        "transform_seconds": 3.5959004890173674e-05,
+        "render_seconds": 0.10006054099358153
       },
       "svg": "examples/svg/branching.before.svg",
       "svg_bytes": 20040,
@@ -143,9 +143,9 @@
       "after_nodes": 7,
       "after_edges": 8,
       "timings": {
-        "load_construct_seconds": 0.004514000000199303,
-        "transform_seconds": 0.00017220900190295652,
-        "render_seconds": 0.12538854099693708
+        "load_construct_seconds": 0.004298125000786968,
+        "transform_seconds": 0.00017725000361679122,
+        "render_seconds": 0.10559162499703234
       },
       "svg": "examples/svg/branching.after.svg",
       "svg_bytes": 17151,
@@ -172,9 +172,9 @@
       "after_nodes": 3216,
       "after_edges": 3789,
       "timings": {
-        "load_construct_seconds": 0.4477287920017261,
-        "transform_seconds": 0.012393207995046396,
-        "render_seconds": 16.458425709002768
+        "load_construct_seconds": 0.41778616700321436,
+        "transform_seconds": 0.012163082996266894,
+        "render_seconds": 15.089149749997887
       },
       "svg": "examples/svg/tinyllama.before.svg",
       "svg_bytes": 7422800,
@@ -209,9 +209,9 @@
       "after_nodes": 1529,
       "after_edges": 2028,
       "timings": {
-        "load_construct_seconds": 0.40736433299753116,
-        "transform_seconds": 0.04881441700126743,
-        "render_seconds": 6.220137917000102
+        "load_construct_seconds": 0.4107525840008748,
+        "transform_seconds": 0.04765991599560948,
+        "render_seconds": 6.586341500005801
       },
       "svg": "examples/svg/tinyllama.after.svg",
       "svg_bytes": 4650375,
@@ -246,9 +246,9 @@
       "after_nodes": 5100,
       "after_edges": 5050,
       "timings": {
-        "load_construct_seconds": 0.03674854199925903,
-        "transform_seconds": 0.067892708000727,
-        "render_seconds": 4.198717749997741
+        "load_construct_seconds": 0.04115233299671672,
+        "transform_seconds": 0.06839712500368478,
+        "render_seconds": 4.351990457995271
       },
       "svg": "examples/svg/synthetic_5101.after.svg",
       "svg_bytes": 9966743,
@@ -270,5 +270,5 @@
       "repetition": 1
     }
   ],
-  "completed_utc": "2026-10-11T11:46:54.408421+00:00"
+  "completed_utc": "2026-10-11T19:17:24.820008+00:00"
 }

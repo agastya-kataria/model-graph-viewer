@@ -200,7 +200,7 @@ def test_absent_removals_and_queries_fail_clearly():
         graph.incoming(12)
     with pytest.raises(ValueError, match="Unknown node ID"):
         graph.outgoing(12)
-    with pytest.raises(ValueError, match="absent edge"):
+    with pytest.raises(ValueError, match="absent node"):
         graph.remove_edge(Edge(0, 0, 1, 0))
 
 
@@ -260,3 +260,35 @@ def test_negative_integer_node_and_annotation_ids_remain_valid():
     assert not graph.incoming(-1)
     graph.remove_node(-1)
     assert not graph.nodes
+
+
+@pytest.mark.parametrize(
+    "invalid_edge",
+    [
+        Edge(False, 0, 1, 0, TensorMetadata((1,), "f32")),
+        Edge(0, 0, 1.0, 0, TensorMetadata((1,), "f32")),
+        Edge(0, False, 1, 0, TensorMetadata((1,), "f32")),
+        Edge(0, 0, 1, 0.0, TensorMetadata((1,), "f32")),
+        Edge(0, 0, 1, 0, TensorMetadata((True,), "f32")),
+        Edge(0, 0, 1, 0, TensorMetadata([1], "f32")),
+    ],
+)
+def test_edge_removal_rejects_invalid_aliases_without_deleting_valid_connection(invalid_edge):
+    tensor = TensorMetadata((1,), "f32")
+    edge = Edge(0, 0, 1, 0, tensor)
+    graph = Graph([node(0, outputs=(0,)), node(1, inputs=(0,))], [edge])
+
+    with pytest.raises(ValueError):
+        graph.remove_edge(invalid_edge)
+
+    assert list(graph.edges) == [edge]
+    assert list(graph.outgoing(0)) == [edge]
+    assert list(graph.incoming(1)) == [edge]
+    graph.validate()
+
+
+def test_removing_absent_edge_between_valid_ports_is_actionable():
+    graph = Graph([node(0, outputs=(0,)), node(1, inputs=(0,))])
+    with pytest.raises(ValueError, match="absent edge"):
+        graph.remove_edge(Edge(0, 0, 1, 0))
+    graph.validate()

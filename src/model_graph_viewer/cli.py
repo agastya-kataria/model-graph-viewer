@@ -8,6 +8,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+from ._paths import atomic_write_text, validate_output_paths
 from .api import visualize
 from .passes import PASS_REGISTRY, create_pass
 from .render import RenderError
@@ -47,8 +48,12 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--highlight requires 'highlight' in --passes")
     if "highlight" in names and not args.highlight:
         parser.error("the highlight pass requires at least one --highlight NAME")
-    if args.stats and args.stats.resolve() in {args.model.resolve(), args.output.resolve()}:
-        parser.error("--stats must be different from the model and SVG paths")
+    try:
+        args.model, args.output, args.stats = validate_output_paths(
+            args.model, args.output, args.stats
+        )
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
     try:
         passes = [
             create_pass(name, **({"names": args.highlight} if name == "highlight" else {}))
@@ -56,8 +61,7 @@ def main(argv: list[str] | None = None) -> int:
         ]
         result = visualize(args.model, args.output, passes, render_timeout=args.render_timeout)
         if args.stats:
-            args.stats.parent.mkdir(parents=True, exist_ok=True)
-            args.stats.write_text(json.dumps(asdict(result), indent=2) + "\n", encoding="utf-8")
+            atomic_write_text(args.stats, json.dumps(asdict(result), indent=2) + "\n")
     except (ValueError, RenderError, OSError, ImportError) as exc:
         print(f"model-graph-viewer: error: {exc}", file=sys.stderr)
         return 1

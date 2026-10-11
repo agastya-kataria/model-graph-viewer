@@ -8,6 +8,7 @@ from pathlib import Path
 from time import perf_counter
 from typing import Protocol
 
+from ._paths import validate_output_paths
 from .graph import Graph
 from .passes import TransformationPass, apply_passes
 from .render import render_svg
@@ -49,13 +50,14 @@ def visualize(
     render_timeout: float = 300,
 ) -> VisualizationResult:
     """Load, transform, and render, measuring the three stages separately."""
+    model_path, output_path, _ = validate_output_paths(model, output)
     start = perf_counter()
-    graph = load_model(model, loader=loader)
+    graph = load_model(model_path, loader=loader)
     loaded = perf_counter()
     before_nodes, before_edges = len(graph.nodes), len(graph.edges)
     graph = apply_passes(graph, passes)
     transformed = perf_counter()
-    path = render_svg(graph, output, timeout=render_timeout)
+    path = render_svg(graph, output_path, timeout=render_timeout)
     rendered = perf_counter()
     return VisualizationResult(
         output_path=str(path),

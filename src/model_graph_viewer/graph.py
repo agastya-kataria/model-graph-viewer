@@ -180,6 +180,9 @@ class Graph:
         self._producers[destination] = edge
 
     def remove_edge(self, edge: Edge) -> None:
+        self._check_endpoint(edge.from_node, edge.from_port, output=True)
+        self._check_endpoint(edge.to_node, edge.to_port, output=False)
+        self._validate_tensor(edge.tensor, "Edge")
         if edge not in self._edges:
             raise ValueError(f"Cannot remove absent edge {edge}")
         del self._edges[edge]

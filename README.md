@@ -56,7 +56,8 @@ The supported passes are:
 Highlighting is opt-in and requires at least one `--highlight`. Unmatched names do nothing.
 Selecting no passes produces the original topology. Unknown passes, invalid inputs, missing weights,
 and rendering failures produce a nonzero exit code and an error on stderr. Failed SVG rendering leaves
-an existing output intact.
+an existing output intact. SVG and statistics paths cannot alias the input model or its weights,
+including symbolic links and hard links. Statistics are written atomically.
 
 ## Python API
 
@@ -208,13 +209,13 @@ Exact environment, commands, input hashes, layout settings, SVG counts, and raw 
 
 | Model / variant | Rendered nodes / edges | Load + construct (s) | Passes (s) | Render + export (s) |
 | --- | ---: | ---: | ---: | ---: |
-| MLP / baseline | 6 / 5 | 0.13588 | 0.00003 | 0.13406 |
-| MLP / improved | 4 / 3 | 0.00644 | 0.00027 | 0.11796 |
-| Branching / baseline | 9 / 11 | 0.00475 | 0.00004 | 0.10670 |
-| Branching / improved | 7 / 8 | 0.00451 | 0.00017 | 0.12539 |
-| TinyLlama / baseline | 3,216 / 3,789 | 0.44773 | 0.01239 | 16.45843 |
-| TinyLlama / improved | 1,529 / 2,028 | 0.40736 | 0.04881 | 6.22014 |
-| Synthetic stress / improved | 5,100 / 5,050 | 0.03675 | 0.06789 | 4.19872 |
+| MLP / baseline | 6 / 5 | 0.13956 | 0.00003 | 0.10631 |
+| MLP / improved | 4 / 3 | 0.00386 | 0.00013 | 0.09676 |
+| Branching / baseline | 9 / 11 | 0.00449 | 0.00004 | 0.10006 |
+| Branching / improved | 7 / 8 | 0.00430 | 0.00018 | 0.10559 |
+| TinyLlama / baseline | 3,216 / 3,789 | 0.41779 | 0.01216 | 15.08915 |
+| TinyLlama / improved | 1,529 / 2,028 | 0.41075 | 0.04766 | 6.58634 |
+| Synthetic stress / improved | 5,100 / 5,050 | 0.04115 | 0.06840 | 4.35199 |
 
 These are single runs, not averages or performance guarantees. Each variant independently reloads
 its model in the same process. The first load includes lazy imports; later runs may benefit from OS
@@ -249,6 +250,8 @@ Tests use local models and require no network access or TinyLlama download.
 
 Clean wheel installations were checked outside the source directory; exact Python versions, test
 outcomes, package origins, and CLI checks are recorded in [verification.json](docs/verification.json).
+The [requirements audit](docs/requirements-audit.md) maps the PDF's requirements to implementation,
+tests, examples, and measured evidence, and identifies the remaining GitHub publication step.
 
 ## Known limitations
 
