@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<net name="starter_mlp" version="11">
+	<layers>
+		<layer id="0" name="input" type="Parameter" version="opset1">
+			<data shape="1,768" element_type="f32" />
+			<output>
+				<port id="0" precision="FP32" names="input">
+					<dim>1</dim>
+					<dim>768</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="1" name="weights" type="Const" version="opset1">
+			<data element_type="f32" shape="768, 1024" offset="0" size="3145728" />
+			<output>
+				<port id="0" precision="FP32">
+					<dim>768</dim>
+					<dim>1024</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="2" name="projection" type="MatMul" version="opset1">
+			<data transpose_a="false" transpose_b="false" />
+			<input>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>768</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>768</dim>
+					<dim>1024</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32">
+					<dim>1</dim>
+					<dim>1024</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="3" name="bias" type="Const" version="opset1">
+			<data element_type="f32" shape="1, 1024" offset="3145728" size="4096" />
+			<output>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>1024</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="4" name="biased_projection" type="Add" version="opset1">
+			<data auto_broadcast="numpy" />
+			<input>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>1024</dim>
+				</port>
+				<port id="1" precision="FP32">
+					<dim>1</dim>
+					<dim>1024</dim>
+				</port>
+			</input>
+			<output>
+				<port id="2" precision="FP32" names="output">
+					<dim>1</dim>
+					<dim>1024</dim>
+				</port>
+			</output>
+		</layer>
+		<layer id="5" name="output" type="Result" version="opset1" output_names="output">
+			<input>
+				<port id="0" precision="FP32">
+					<dim>1</dim>
+					<dim>1024</dim>
+				</port>
+			</input>
+		</layer>
+	</layers>
+	<edges>
+		<edge from-layer="0" from-port="0" to-layer="2" to-port="0" />
+		<edge from-layer="1" from-port="0" to-layer="2" to-port="1" />
+		<edge from-layer="2" from-port="2" to-layer="4" to-port="0" />
+		<edge from-layer="3" from-port="0" to-layer="4" to-port="1" />
+		<edge from-layer="4" from-port="2" to-layer="5" to-port="0" />
+	</edges>
+	<rt_info />
+</net>

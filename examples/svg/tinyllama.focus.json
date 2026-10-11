@@ -1,0 +1,14 @@
+{
+  "selection": "First MatMul in topological graph order with Constant -> Convert on input 1",
+  "selected_node_id": 43,
+  "selected_name": "__module.model.layers.0.self_attn.q_proj/ov_ext::linear/MatMul",
+  "before": {
+    "nodes": 5,
+    "edges": 4
+  },
+  "after": {
+    "nodes": 3,
+    "edges": 2
+  },
+  "boundary": "External connections are intentionally omitted; node port metadata is preserved."
+}

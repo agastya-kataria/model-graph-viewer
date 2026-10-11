@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "started_utc": "2026-10-10T15:12:31.917435+00:00",
+  "command": "/Users/agastyakataria/Downloads/assignment/.venv/bin/python scripts/benchmark.py --models all --include-synthetic --repeats 1",
+  "working_directory": "/Users/agastyakataria/Downloads/assignment",
+  "environment": {
+    "python": "3.12.14 (main, Sep 24 2026, 17:46:32) [Clang 22.1.3 ]",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "hardware": {
+      "machine": "arm64",
+      "processor": "arm",
+      "logical_cpu_count": 10,
+      "model": "Mac16,12",
+      "cpu_brand": "Apple M4",
+      "memory_bytes": "17179869184"
+    },
+    "dependencies": {
+      "model-graph-viewer": "0.1.0",
+      "openvino": "2026.0.0",
+      "numpy": "2.4.6",
+      "graphviz": "0.21"
+    },
+    "graphviz_executable": "dot - graphviz version 16.1.0 (20260904.0139)"
+  },
+  "methodology": "Single process, independent load/construction for each variant and repetition, no warm-up; first load includes lazy adapter imports and later runs may benefit from OS caches. Wall-clock perf_counter. Transform timing includes bookkeeping and validation. Render timing includes DOT generation, Graphviz layout, and SVG writing. No compilation or inference. Synthetic renders the improved graph only.",
+  "inputs": {
+    "mlp": {
+      "xml_sha256": "2c6fdcc46c1381b75a33db351c7c4cb90556b3a859f305d9becf2bca7e468150",
+      "weights_bytes": 3149824
+    },
+    "branching": {
+      "xml_sha256": "70644923fb02816e1f806a4efff61c0ec75423eb382e37ce694d7102eab1b58c",
+      "weights_bytes": 72
+    },
+    "tinyllama": {
+      "xml_sha256": "86e594d53e12ebe7ea85335828e363e8f550dadb661b99f7b3c2e59b6b604a10",
+      "weights_bytes": 2200097101
+    }
+  },
+  "runs": [
+    {
+      "model": "mlp",
+      "kind": "real OpenVINO IR",
+      "variant": "baseline",
+      "passes": [],
+      "before_nodes": 6,
+      "before_edges": 5,
+      "after_nodes": 6,
+      "after_edges": 5,
+      "timings": {
+        "load_construct_seconds": 0.11296345800292329,
+        "transform_seconds": 2.1249998098937795e-05,
+        "render_seconds": 0.0991960419996758
+      },
+      "svg": "examples/svg/mlp.before.svg",
+      "svg_bytes": 11311,
+      "repetition": 1
+    },
+    {
+      "model": "mlp",
+      "kind": "real OpenVINO IR",
+      "variant": "improved",
+      "passes": [
+        "hide-constant-converts",
+        "hide-constants",
+        "highlight:projection"
+      ],
+      "before_nodes": 6,
+      "before_edges": 5,
+      "after_nodes": 4,
+      "after_edges": 3,
+      "timings": {
+        "load_construct_seconds": 0.003800290996878175,
+        "transform_seconds": 0.00010037500032922253,
+        "render_seconds": 0.09675895899999887
+      },
+      "svg": "examples/svg/mlp.after.svg",
+      "svg_bytes": 8623,
+      "repetition": 1
+    },
+    {
+      "model": "branching",
+      "kind": "real OpenVINO IR",
+      "variant": "baseline",
+      "passes": [],
+      "before_nodes": 9,
+      "before_edges": 11,
+      "after_nodes": 9,
+      "after_edges": 11,
+      "timings": {
+        "load_construct_seconds": 0.004408791999594541,
+        "transform_seconds": 2.5749999622348696e-05,
+        "render_seconds": 0.10195500000190805
+      },
+      "svg": "examples/svg/branching.before.svg",
+      "svg_bytes": 20040,
+      "repetition": 1
+    },
+    {
+      "model": "branching",
+      "kind": "real OpenVINO IR",
+      "variant": "improved",
+      "passes": [
+        "hide-constant-converts",
+        "hide-constants",
+        "highlight:projection"
+      ],
+      "before_nodes": 9,
+      "before_edges": 11,
+      "after_nodes": 7,
+      "after_edges": 8,
+      "timings": {
+        "load_construct_seconds": 0.004903541001112899,
+        "transform_seconds": 0.00013891699927626178,
+        "render_seconds": 0.10777441699974588
+      },
+      "svg": "examples/svg/branching.after.svg",
+      "svg_bytes": 17151,
+      "repetition": 1
+    }
+  ],
+  "status": "interrupted",
+  "interruption": {
+    "stage": "tinyllama baseline SVG render",
+    "layout": "Initial renderer using unbounded Graphviz defaults and spline edges",
+    "reason": "Manually terminated after failing to complete; no full TinyLlama SVG was produced.",
+    "timing_note": "No completed TinyLlama render timing is available for this attempt. Completed small-model runs are retained below; they are not the final benchmark."
+  }
+}

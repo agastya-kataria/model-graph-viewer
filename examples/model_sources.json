@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generated": {
+    "seed": 20261010,
+    "command": "python scripts/build_examples.py",
+    "models": [
+      {"name": "mlp", "path": "examples/models/mlp.xml", "description": "Starter MLP: [1,768] @ [768,1024] + [1,1024], float32."},
+      {"name": "branching", "path": "examples/models/branching.xml", "description": "Dynamic batch, Split outputs, shared weights, duplicate operation names, and repeated connections between a pair of operations."}
+    ]
+  },
+  "tinyllama": {
+    "repository": "OpenVINO/TinyLlama-1.1B-Chat-v1.0-fp16-ov",
+    "revision": "88a9e6bbe7f9f8cf4e61ac96eed57ec164ad46f5",
+    "license": "Apache-2.0",
+    "source": "https://huggingface.co/OpenVINO/TinyLlama-1.1B-Chat-v1.0-fp16-ov/tree/88a9e6bbe7f9f8cf4e61ac96eed57ec164ad46f5",
+    "directory": "models/tinyllama",
+    "files": [
+      {"name": "openvino_model.xml", "size_bytes": 1612967, "sha256": "86e594d53e12ebe7ea85335828e363e8f550dadb661b99f7b3c2e59b6b604a10"},
+      {"name": "openvino_model.bin", "size_bytes": 2200097101, "sha256": "f2e830359ae60f25f3aaeea3a5207c5f5dedee0661dad32b9d679a00d6f3068f"}
+    ]
+  }
+}

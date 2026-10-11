@@ -1,0 +1,370 @@
+{
+  "verification_date": "2026-10-11",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "method": "Build wheel, install locked dependencies and wheel into fresh temporary environments, then execute from outside the source tree with PYTHONPATH removed.",
+  "requirements_sha256": "9696f032c338be1b52d9a2e4ccee8e2d27ee017a11700ffcd09bc5d5f21e0b12",
+  "source_sha256": {
+    "src/model_graph_viewer/__init__.py": "3a93c1eb86a5a800c4e97c2928a615bf7e5f9df69b8f73fd267219cf8adc68bd",
+    "src/model_graph_viewer/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "src/model_graph_viewer/api.py": "1de6463b6d2b7150729dc457e9d4b640a3e0b6f425203ab41cf542332377d0a5",
+    "src/model_graph_viewer/cli.py": "27251b2b9afb8ed9d0ffac1945ce41c74317a468b3b0e29cc43375ab95d90fdd",
+    "src/model_graph_viewer/graph.py": "5fb7a1bc72e275259f38ee2517af29178c14b8dddf6e7721918558c015670119",
+    "src/model_graph_viewer/openvino_loader.py": "3901e8dd60a5bd6e7b88a9b81ec8fc6d001c62a8ff45aa6601f70c5747b437f3",
+    "src/model_graph_viewer/passes.py": "ac1b45c301a3d4106299a57b3b931d6ac1bbf7f75928c260ae333d7ac1c7b347",
+    "src/model_graph_viewer/render.py": "dcde8c24598dcd94c4f7870501f0bd10ea3ac02c574c752fc73ed770ea92696b"
+  },
+  "test_sha256": {
+    "tests/test_api_cli.py": "efc2a1b86d8337694c90ba9ea52946420fce2c9542a100f7261c19f6190da1c9",
+    "tests/test_graph.py": "69c7712de7fcea5c759128c9c41786cbb79d83b378e1840f22a6367e47b38e51",
+    "tests/test_openvino_loader.py": "3c7ad0cde84e355a0299fa484b962c082490e510c97e633a3e6222039c818e72",
+    "tests/test_passes.py": "2d832e708458c0868bdadbb62ca07ca904117d654472a4d3fe140052fc20e93e",
+    "tests/test_render.py": "65118765f7c03681048eb2b8f0d88bdc81b7d4a316a624ec4cacbf311d51572c"
+  },
+  "build": {
+    "command": [
+      "/Users/agastyakataria/Downloads/assignment/.venv/bin/python",
+      "-m",
+      "build",
+      "--wheel",
+      "--outdir",
+      "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/wheel"
+    ],
+    "cwd": "/Users/agastyakataria/Downloads/assignment",
+    "exit_code": 0,
+    "elapsed_seconds": 3.2904290840015165,
+    "stdout": "Successfully built model_graph_viewer-0.1.0-py3-none-any.whl\n",
+    "stderr": "* Creating isolated environment: venv+pip...\n* Installing packages in isolated environment:\n  - hatchling>=1.27,<2\n* Getting build dependencies for wheel...\n* Installed build dependency versions:\n  - hatchling==1.32.4\n* Building wheel...\n"
+  },
+  "wheel_name": "model_graph_viewer-0.1.0-py3-none-any.whl",
+  "wheel_sha256": "a8c13b53dc2da089c89c302efbb9a338d45b64fbaf8f0eb3739a3412f24ae7bb",
+  "environments": [
+    {
+      "requested_python": "3.11",
+      "commands": [
+        {
+          "command": [
+            "/Users/agastyakataria/.local/bin/uv",
+            "venv",
+            "--python",
+            "/Users/agastyakataria/.local/share/uv/python/cpython-3.11-macos-aarch64-none/bin/python3.11",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 0.014789250002650078,
+          "stdout": "",
+          "stderr": "Using CPython 3.11.15 interpreter at: /Users/agastyakataria/.local/share/uv/python/cpython-3.11-macos-aarch64-none/bin/python3.11\nCreating virtual environment at: /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment\nActivate with: source /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/activate\n"
+        },
+        {
+          "command": [
+            "/Users/agastyakataria/.local/bin/uv",
+            "pip",
+            "install",
+            "--python",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/python",
+            "-r",
+            "/Users/agastyakataria/Downloads/assignment/requirements.lock"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 0.1460932080008206,
+          "stdout": "",
+          "stderr": "Using Python 3.11.15 environment at: /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment\nResolved 12 packages in 1ms\nInstalled 12 packages in 81ms\n + build==1.6.1\n + graphviz==0.21\n + iniconfig==2.3.1\n + numpy==2.4.6\n + openvino==2026.0.0\n + openvino-telemetry==2025.2.0\n + packaging==26.3\n + pluggy==1.6.0\n + pygments==2.21.0\n + pyproject-hooks==1.3.3\n + pytest==9.1.1\n + ruff==0.17.0\n"
+        },
+        {
+          "command": [
+            "/Users/agastyakataria/.local/bin/uv",
+            "pip",
+            "install",
+            "--python",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/python",
+            "--no-deps",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/wheel/model_graph_viewer-0.1.0-py3-none-any.whl"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 0.027902375004487112,
+          "stdout": "",
+          "stderr": "Using Python 3.11.15 environment at: /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment\nResolved 1 package in 0.68ms\nPrepared 1 package in 4ms\nInstalled 1 package in 2ms\n + model-graph-viewer==0.1.0 (from file:///var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/wheel/model_graph_viewer-0.1.0-py3-none-any.whl)\n"
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/python",
+            "-c",
+            "import importlib.metadata as m,json,platform,model_graph_viewer;print(json.dumps({'python':platform.python_version(),'package_file':model_graph_viewer.__file__,'dependencies':dict(sorted((d.metadata['Name'],d.version) for d in m.distributions()))}))"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 0.11666687500110129,
+          "stdout": "{\"python\": \"3.11.15\", \"package_file\": \"/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/lib/python3.11/site-packages/model_graph_viewer/__init__.py\", \"dependencies\": {\"Pygments\": \"2.21.0\", \"build\": \"1.6.1\", \"graphviz\": \"0.21\", \"iniconfig\": \"2.3.1\", \"model-graph-viewer\": \"0.1.0\", \"numpy\": \"2.4.6\", \"openvino\": \"2026.0.0\", \"openvino-telemetry\": \"2025.2.0\", \"packaging\": \"26.3\", \"pluggy\": \"1.6.0\", \"pyproject_hooks\": \"1.3.3\", \"pytest\": \"9.1.1\", \"ruff\": \"0.17.0\"}}\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/python",
+            "-m",
+            "pytest",
+            "/Users/agastyakataria/Downloads/assignment/tests",
+            "-q",
+            "--junitxml=/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/tests.xml"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 3.755617416005407,
+          "stdout": "........................................................................ [ 69%]\n...............................                                          [100%]\n103 passed in 3.34s\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/python",
+            "-m",
+            "model_graph_viewer",
+            "--help"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 0.06497645800118335,
+          "stdout": "usage: __main__.py [-h] --model MODEL --output OUTPUT [--passes PASSES]\n                   [--highlight NAME] [--stats STATS]\n                   [--render-timeout SECONDS]\n\nVisualize an OpenVINO IR model as a port-aware SVG graph.\n\noptions:\n  -h, --help            show this help message and exit\n  --model MODEL         OpenVINO .xml model path\n  --output OUTPUT       Destination .svg path\n  --passes PASSES       Comma-separated passes in execution order: highlight,\n                        hide-constants, hide-constant-converts\n  --highlight NAME      Exact node name for the highlight pass; repeat for\n                        multiple names\n  --stats STATS         Also write counts and stage timings as JSON\n  --render-timeout SECONDS\n                        Maximum Graphviz running time in seconds (default:\n                        300)\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/model-graph-viewer",
+            "--help"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 0.26723041600052966,
+          "stdout": "usage: model-graph-viewer [-h] --model MODEL --output OUTPUT [--passes PASSES]\n                          [--highlight NAME] [--stats STATS]\n                          [--render-timeout SECONDS]\n\nVisualize an OpenVINO IR model as a port-aware SVG graph.\n\noptions:\n  -h, --help            show this help message and exit\n  --model MODEL         OpenVINO .xml model path\n  --output OUTPUT       Destination .svg path\n  --passes PASSES       Comma-separated passes in execution order: highlight,\n                        hide-constants, hide-constant-converts\n  --highlight NAME      Exact node name for the highlight pass; repeat for\n                        multiple names\n  --stats STATS         Also write counts and stage timings as JSON\n  --render-timeout SECONDS\n                        Maximum Graphviz running time in seconds (default:\n                        300)\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/bin/model-graph-viewer",
+            "--model",
+            "/Users/agastyakataria/Downloads/assignment/examples/models/branching.xml",
+            "--output",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/branching.svg",
+            "--passes",
+            "hide-constants,highlight",
+            "--highlight",
+            "branch",
+            "--stats",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/branching.json"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11",
+          "exit_code": 0,
+          "elapsed_seconds": 0.41784924999956274,
+          "stdout": "Wrote /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/branching.svg: 9 \u2192 7 nodes, 11 \u2192 8 edges\n",
+          "stderr": ""
+        }
+      ],
+      "python": "3.11.15",
+      "package_file": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/environment/lib/python3.11/site-packages/model_graph_viewer/__init__.py",
+      "dependencies": {
+        "Pygments": "2.21.0",
+        "build": "1.6.1",
+        "graphviz": "0.21",
+        "iniconfig": "2.3.1",
+        "model-graph-viewer": "0.1.0",
+        "numpy": "2.4.6",
+        "openvino": "2026.0.0",
+        "openvino-telemetry": "2025.2.0",
+        "packaging": "26.3",
+        "pluggy": "1.6.0",
+        "pyproject_hooks": "1.3.3",
+        "pytest": "9.1.1",
+        "ruff": "0.17.0"
+      },
+      "imported_installed_wheel": true,
+      "tests": {
+        "total": 103,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cli_smoke": {
+        "svg_parsed": true,
+        "svg_bytes": 17128,
+        "statistics": {
+          "output_path": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.11/branching.svg",
+          "before_nodes": 9,
+          "before_edges": 11,
+          "after_nodes": 7,
+          "after_edges": 8,
+          "timings": {
+            "load_construct_seconds": 0.12771808399702422,
+            "transform_seconds": 0.00015195800369838253,
+            "render_seconds": 0.10151475000020582
+          }
+        }
+      }
+    },
+    {
+      "requested_python": "3.13.9",
+      "commands": [
+        {
+          "command": [
+            "/Users/agastyakataria/.local/bin/uv",
+            "venv",
+            "--python",
+            "/opt/homebrew/opt/python@3.13/bin/python3.13",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 0.015020040998933837,
+          "stdout": "",
+          "stderr": "Using CPython 3.13.9 interpreter at: /opt/homebrew/opt/python@3.13/bin/python3.13\nCreating virtual environment at: /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment\nActivate with: source /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/activate\n"
+        },
+        {
+          "command": [
+            "/Users/agastyakataria/.local/bin/uv",
+            "pip",
+            "install",
+            "--python",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/python",
+            "-r",
+            "/Users/agastyakataria/Downloads/assignment/requirements.lock"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 0.14444316700246418,
+          "stdout": "",
+          "stderr": "Using Python 3.13.9 environment at: environment\nResolved 12 packages in 1ms\nInstalled 12 packages in 71ms\n + build==1.6.1\n + graphviz==0.21\n + iniconfig==2.3.1\n + numpy==2.4.6\n + openvino==2026.0.0\n + openvino-telemetry==2025.2.0\n + packaging==26.3\n + pluggy==1.6.0\n + pygments==2.21.0\n + pyproject-hooks==1.3.3\n + pytest==9.1.1\n + ruff==0.17.0\n"
+        },
+        {
+          "command": [
+            "/Users/agastyakataria/.local/bin/uv",
+            "pip",
+            "install",
+            "--python",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/python",
+            "--no-deps",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/wheel/model_graph_viewer-0.1.0-py3-none-any.whl"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 0.02626679199602222,
+          "stdout": "",
+          "stderr": "Using Python 3.13.9 environment at: environment\nResolved 1 package in 0.78ms\nPrepared 1 package in 3ms\nInstalled 1 package in 2ms\n + model-graph-viewer==0.1.0 (from file:///var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/wheel/model_graph_viewer-0.1.0-py3-none-any.whl)\n"
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/python",
+            "-c",
+            "import importlib.metadata as m,json,platform,model_graph_viewer;print(json.dumps({'python':platform.python_version(),'package_file':model_graph_viewer.__file__,'dependencies':dict(sorted((d.metadata['Name'],d.version) for d in m.distributions()))}))"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 0.14174345799983712,
+          "stdout": "{\"python\": \"3.13.9\", \"package_file\": \"/private/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/lib/python3.13/site-packages/model_graph_viewer/__init__.py\", \"dependencies\": {\"Pygments\": \"2.21.0\", \"build\": \"1.6.1\", \"graphviz\": \"0.21\", \"iniconfig\": \"2.3.1\", \"model-graph-viewer\": \"0.1.0\", \"numpy\": \"2.4.6\", \"openvino\": \"2026.0.0\", \"openvino-telemetry\": \"2025.2.0\", \"packaging\": \"26.3\", \"pluggy\": \"1.6.0\", \"pyproject_hooks\": \"1.3.3\", \"pytest\": \"9.1.1\", \"ruff\": \"0.17.0\"}}\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/python",
+            "-m",
+            "pytest",
+            "/Users/agastyakataria/Downloads/assignment/tests",
+            "-q",
+            "--junitxml=/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/tests.xml"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 4.869507292001799,
+          "stdout": "........................................................................ [ 69%]\n...............................                                          [100%]\n103 passed in 4.20s\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/python",
+            "-m",
+            "model_graph_viewer",
+            "--help"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 0.0930743339995388,
+          "stdout": "usage: __main__.py [-h] --model MODEL --output OUTPUT [--passes PASSES]\n                   [--highlight NAME] [--stats STATS]\n                   [--render-timeout SECONDS]\n\nVisualize an OpenVINO IR model as a port-aware SVG graph.\n\noptions:\n  -h, --help            show this help message and exit\n  --model MODEL         OpenVINO .xml model path\n  --output OUTPUT       Destination .svg path\n  --passes PASSES       Comma-separated passes in execution order: highlight,\n                        hide-constants, hide-constant-converts\n  --highlight NAME      Exact node name for the highlight pass; repeat for\n                        multiple names\n  --stats STATS         Also write counts and stage timings as JSON\n  --render-timeout SECONDS\n                        Maximum Graphviz running time in seconds (default:\n                        300)\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/model-graph-viewer",
+            "--help"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 0.22597866599971894,
+          "stdout": "usage: model-graph-viewer [-h] --model MODEL --output OUTPUT [--passes PASSES]\n                          [--highlight NAME] [--stats STATS]\n                          [--render-timeout SECONDS]\n\nVisualize an OpenVINO IR model as a port-aware SVG graph.\n\noptions:\n  -h, --help            show this help message and exit\n  --model MODEL         OpenVINO .xml model path\n  --output OUTPUT       Destination .svg path\n  --passes PASSES       Comma-separated passes in execution order: highlight,\n                        hide-constants, hide-constant-converts\n  --highlight NAME      Exact node name for the highlight pass; repeat for\n                        multiple names\n  --stats STATS         Also write counts and stage timings as JSON\n  --render-timeout SECONDS\n                        Maximum Graphviz running time in seconds (default:\n                        300)\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/bin/model-graph-viewer",
+            "--model",
+            "/Users/agastyakataria/Downloads/assignment/examples/models/branching.xml",
+            "--output",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/branching.svg",
+            "--passes",
+            "hide-constants,highlight",
+            "--highlight",
+            "branch",
+            "--stats",
+            "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/branching.json"
+          ],
+          "cwd": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9",
+          "exit_code": 0,
+          "elapsed_seconds": 0.45641062499635154,
+          "stdout": "Wrote /var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/branching.svg: 9 \u2192 7 nodes, 11 \u2192 8 edges\n",
+          "stderr": ""
+        }
+      ],
+      "python": "3.13.9",
+      "package_file": "/private/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/environment/lib/python3.13/site-packages/model_graph_viewer/__init__.py",
+      "dependencies": {
+        "Pygments": "2.21.0",
+        "build": "1.6.1",
+        "graphviz": "0.21",
+        "iniconfig": "2.3.1",
+        "model-graph-viewer": "0.1.0",
+        "numpy": "2.4.6",
+        "openvino": "2026.0.0",
+        "openvino-telemetry": "2025.2.0",
+        "packaging": "26.3",
+        "pluggy": "1.6.0",
+        "pyproject_hooks": "1.3.3",
+        "pytest": "9.1.1",
+        "ruff": "0.17.0"
+      },
+      "imported_installed_wheel": true,
+      "tests": {
+        "total": 103,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cli_smoke": {
+        "svg_parsed": true,
+        "svg_bytes": 17128,
+        "statistics": {
+          "output_path": "/var/folders/z0/m80cd4g10rl9h0qnxytdz6f40000gn/T/model-graph-verification-3drp0fp2/3.13.9/branching.svg",
+          "before_nodes": 9,
+          "before_edges": 11,
+          "after_nodes": 7,
+          "after_edges": 8,
+          "timings": {
+            "load_construct_seconds": 0.170986791003088,
+            "transform_seconds": 0.00020008399587823078,
+            "render_seconds": 0.10516625000309432
+          }
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "inputs_unchanged_during_verification": true,
+  "temporary_environments_cleaned": true
+}
