@@ -46,9 +46,9 @@ The implementation's limitations are explicit: nested control-flow bodies are no
 control-ordering edges are not synthesized; longer conversion chains are not collapsed; and large
 graphs use straight edges that can cross nodes. Full topology and port information are retained.
 
-The requested deliverable has been prepared as a **local Git repository**. The PDF ultimately asks
-for a GitHub repository; pushing it and submitting that URL remain the publication step, deferred
-by the selected local-only delivery scope.
+The deliverable is the [GitHub repository](https://github.com/agastya-kataria/model-graph-viewer).
+It includes the source, tests, generated SVGs, small model files, and reproduction scripts. Large
+TinyLlama weights are excluded from Git and acquired with the pinned, checksum-verified download script.
 
 The PDF also requires understanding the submitted code. The [design walkthrough](design.md) explains
 operation identity versus names, runtime versus XML port indices, Constant sharing, in-place graph

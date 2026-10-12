@@ -1,5 +1,7 @@
 # Model Graph Viewer
 
+[![Tests](https://github.com/agastya-kataria/model-graph-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/agastya-kataria/model-graph-viewer/actions/workflows/ci.yml)
+
 A Python library and CLI for visualizing OpenVINO computational graphs as SVGs. It preserves
 operation identity, tensor metadata, and exact input/output port connections while applying ordered
 visualization passes. The model itself is never modified.
@@ -13,9 +15,11 @@ detail views. Download SVGs and open them in a browser if GitHub cannot preview 
 Use Python 3.11–3.13. Install the **Graphviz system executable** as well as the Python dependencies.
 On macOS use `brew install graphviz`; on Debian/Ubuntu use `sudo apt install graphviz`.
 
-From the cloned repository:
+Clone the repository, then install and run:
 
 ```sh
+git clone https://github.com/agastya-kataria/model-graph-viewer.git
+cd model-graph-viewer
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.lock
@@ -251,7 +255,8 @@ Tests use local models and require no network access or TinyLlama download.
 Clean wheel installations were checked outside the source directory; exact Python versions, test
 outcomes, package origins, and CLI checks are recorded in [verification.json](docs/verification.json).
 The [requirements audit](docs/requirements-audit.md) maps the PDF's requirements to implementation,
-tests, examples, and measured evidence, and identifies the remaining GitHub publication step.
+tests, examples, and measured evidence. GitHub Actions runs the tests on Python 3.11–3.13 and checks
+linting, formatting, and package builds.
 
 ## Known limitations
 
