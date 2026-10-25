@@ -34,6 +34,21 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--stats", type=Path, help="Also write counts and stage timings as JSON")
     parser.add_argument(
+        "--metadata", type=Path, help="Metadata JSON path (default: SVG basename with .json)"
+    )
+    parser.add_argument(
+        "--label-detail",
+        choices=("compact", "full"),
+        default="compact",
+        help="Visible label detail (default: compact; full includes names and verbose attributes)",
+    )
+    parser.add_argument(
+        "--fanout-threshold",
+        type=int,
+        metavar="N",
+        help="Reference nodes with more than N outgoing edges (default: 3; requires pass)",
+    )
+    parser.add_argument(
         "--render-timeout",
         type=float,
         default=300,
@@ -48,18 +63,34 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--highlight requires 'highlight' in --passes")
     if "highlight" in names and not args.highlight:
         parser.error("the highlight pass requires at least one --highlight NAME")
+    if args.fanout_threshold is not None:
+        if args.fanout_threshold < 1:
+            parser.error("--fanout-threshold must be a positive integer")
+        if "reference-high-fanout" not in names:
+            parser.error("--fanout-threshold requires 'reference-high-fanout' in --passes")
     try:
-        args.model, args.output, args.stats = validate_output_paths(
-            args.model, args.output, args.stats
+        args.model, args.output, args.stats, args.metadata = validate_output_paths(
+            args.model, args.output, args.stats, args.metadata
         )
     except (ValueError, OSError) as exc:
         parser.error(str(exc))
     try:
-        passes = [
-            create_pass(name, **({"names": args.highlight} if name == "highlight" else {}))
-            for name in names
-        ]
-        result = visualize(args.model, args.output, passes, render_timeout=args.render_timeout)
+        passes = []
+        for name in names:
+            options = {}
+            if name == "highlight":
+                options["names"] = args.highlight
+            elif name == "reference-high-fanout" and args.fanout_threshold is not None:
+                options["threshold"] = args.fanout_threshold
+            passes.append(create_pass(name, **options))
+        result = visualize(
+            args.model,
+            args.output,
+            passes,
+            render_timeout=args.render_timeout,
+            label_detail=args.label_detail,
+            metadata=args.metadata,
+        )
         if args.stats:
             atomic_write_text(args.stats, json.dumps(asdict(result), indent=2) + "\n")
     except (ValueError, RenderError, OSError, ImportError) as exc:
@@ -68,6 +99,8 @@ def main(argv: list[str] | None = None) -> int:
     print(
         f"Wrote {result.output_path}: "
         f"{result.before_nodes} → {result.after_nodes} nodes, "
-        f"{result.before_edges} → {result.after_edges} edges"
+        f"{result.before_edges} → {result.after_edges} logical edges "
+        f"({result.rendered_edges} drawn, {result.referenced_edges} referenced); "
+        f"metadata: {result.metadata_path}"
     )
     return 0

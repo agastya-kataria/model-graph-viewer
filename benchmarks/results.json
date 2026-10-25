@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
-  "started_utc": "2026-10-11T19:16:56.179253+00:00",
-  "command": "/Users/agastyakataria/Downloads/assignment/.venv/bin/python scripts/benchmark.py --models all --include-synthetic --repeats 1",
-  "working_directory": "/Users/agastyakataria/Downloads/assignment",
+  "schema_version": 2,
+  "started_utc": "2026-10-23T17:30:07.728432+00:00",
+  "command": "/Users/agastyakataria/Desktop/intel/model-graph-viewer/.venv/bin/python scripts/benchmark.py --models all --include-synthetic --repeats 1",
+  "working_directory": "/Users/agastyakataria/Desktop/intel/model-graph-viewer",
   "environment": {
     "python": "3.12.14 (main, Sep 24 2026, 17:46:32) [Clang 22.1.3 ]",
     "platform": "macOS-27.0.1-arm64-arm-64bit",
@@ -22,7 +22,7 @@
     },
     "graphviz_executable": "dot - graphviz version 16.1.0 (20260904.0139)"
   },
-  "methodology": "Single process, independent load/construction for each variant and repetition, no warm-up; first load includes lazy adapter imports and later runs may benefit from OS caches. Wall-clock perf_counter. Transform timing includes bookkeeping and validation. Render timing includes DOT generation, Graphviz layout, and SVG writing. More than 1,000 nodes use Graphviz nslimit=2, nslimit1=2, mclimit=0.1, splines=line; smaller graphs use dot defaults. Exact layout attributes are recorded per run. Rendering has a 300-second default timeout (configurable). SVG node/edge completeness is checked after timing. No compilation or inference. Synthetic renders the improved graph only.",
+  "methodology": "Single process, independent load/construction for each variant and repetition, no warm-up; first load includes lazy adapter imports and later runs may benefit from OS caches. Wall-clock perf_counter. Transform timing includes the original metadata snapshot, pass bookkeeping, and validation. Render timing includes DOT generation, Graphviz layout, SVG and JSON writing. Exact layout attributes are recorded per run. Baseline: no passes, full labels. Compact: Constant/Convert hiding, compact labels. Improved: compact plus fan-out references. SVG identities, exact connectivity, reference source markers, JSON snapshots, and tensor metadata are checked independently after timing. Geometry measurements also occur outside timings. No compilation or inference. Synthetic renders the improved graph only.",
   "inputs": {
     "mlp": {
       "xml_sha256": "2c6fdcc46c1381b75a33db351c7c4cb90556b3a859f305d9becf2bca7e468150",
@@ -43,26 +43,91 @@
       "kind": "real OpenVINO IR",
       "variant": "baseline",
       "passes": [],
+      "label_detail": "full",
+      "fanout_threshold": null,
       "before_nodes": 6,
       "before_edges": 5,
       "after_nodes": 6,
       "after_edges": 5,
       "timings": {
-        "load_construct_seconds": 0.1395641249982873,
-        "transform_seconds": 2.6875000912696123e-05,
-        "render_seconds": 0.10630758300248999
+        "load_construct_seconds": 0.08671166701242328,
+        "transform_seconds": 8.554199303034693e-05,
+        "render_seconds": 0.08495216599840205
       },
       "svg": "examples/svg/mlp.before.svg",
-      "svg_bytes": 11311,
-      "svg_verified_counts": {
+      "svg_bytes": 11300,
+      "metadata": "examples/svg/mlp.before.json",
+      "metadata_bytes": 9849,
+      "svg_verified": {
         "nodes": 6,
-        "edges": 5
+        "logical_edges": 5,
+        "rendered_edges": 5,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 220.0,
+        "canvas_height_points": 663.0,
+        "node_width_points": {
+          "minimum": 40.24000000000001,
+          "median": 68.5,
+          "maximum": 109.0
+        }
       },
       "layout_graph_attributes": {
         "rankdir": "TB",
         "ranksep": "0.45",
         "nodesep": "0.25",
-        "bgcolor": "white"
+        "bgcolor": "white",
+        "splines": "polyline"
+      },
+      "render_timeout_seconds": 300,
+      "repetition": 1
+    },
+    {
+      "model": "mlp",
+      "kind": "real OpenVINO IR",
+      "variant": "compact",
+      "passes": [
+        "hide-constant-converts",
+        "hide-constants",
+        "highlight:projection"
+      ],
+      "label_detail": "compact",
+      "fanout_threshold": null,
+      "before_nodes": 6,
+      "before_edges": 5,
+      "after_nodes": 4,
+      "after_edges": 3,
+      "timings": {
+        "load_construct_seconds": 0.0023842499940656126,
+        "transform_seconds": 0.00011320899648126215,
+        "render_seconds": 0.06200425000861287
+      },
+      "svg": "examples/svg/mlp.compact.svg",
+      "svg_bytes": 7906,
+      "metadata": "examples/svg/mlp.compact.json",
+      "metadata_bytes": 9104,
+      "svg_verified": {
+        "nodes": 4,
+        "logical_edges": 3,
+        "rendered_edges": 3,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 148.0,
+        "canvas_height_points": 607.0,
+        "node_width_points": {
+          "minimum": 40.24000000000001,
+          "median": 87.62,
+          "maximum": 109.0
+        }
+      },
+      "layout_graph_attributes": {
+        "rankdir": "TB",
+        "ranksep": "0.45",
+        "nodesep": "0.25",
+        "bgcolor": "white",
+        "splines": "polyline"
       },
       "render_timeout_seconds": 300,
       "repetition": 1
@@ -74,28 +139,45 @@
       "passes": [
         "hide-constant-converts",
         "hide-constants",
-        "highlight:projection"
+        "highlight:projection",
+        "reference-high-fanout"
       ],
+      "label_detail": "compact",
+      "fanout_threshold": 3,
       "before_nodes": 6,
       "before_edges": 5,
       "after_nodes": 4,
       "after_edges": 3,
       "timings": {
-        "load_construct_seconds": 0.0038569579992326908,
-        "transform_seconds": 0.00012550000246847048,
-        "render_seconds": 0.09675570899707964
+        "load_construct_seconds": 0.0022237090015551075,
+        "transform_seconds": 0.00011554099910426885,
+        "render_seconds": 0.0659876669960795
       },
       "svg": "examples/svg/mlp.after.svg",
-      "svg_bytes": 8623,
-      "svg_verified_counts": {
+      "svg_bytes": 7906,
+      "metadata": "examples/svg/mlp.after.json",
+      "metadata_bytes": 9104,
+      "svg_verified": {
         "nodes": 4,
-        "edges": 3
+        "logical_edges": 3,
+        "rendered_edges": 3,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 148.0,
+        "canvas_height_points": 607.0,
+        "node_width_points": {
+          "minimum": 40.24000000000001,
+          "median": 87.62,
+          "maximum": 109.0
+        }
       },
       "layout_graph_attributes": {
         "rankdir": "TB",
         "ranksep": "0.45",
         "nodesep": "0.25",
-        "bgcolor": "white"
+        "bgcolor": "white",
+        "splines": "polyline"
       },
       "render_timeout_seconds": 300,
       "repetition": 1
@@ -105,26 +187,91 @@
       "kind": "real OpenVINO IR",
       "variant": "baseline",
       "passes": [],
+      "label_detail": "full",
+      "fanout_threshold": null,
       "before_nodes": 9,
       "before_edges": 11,
       "after_nodes": 9,
       "after_edges": 11,
       "timings": {
-        "load_construct_seconds": 0.004493540996918455,
-        "transform_seconds": 3.5959004890173674e-05,
-        "render_seconds": 0.10006054099358153
+        "load_construct_seconds": 0.002571125005488284,
+        "transform_seconds": 8.658299339003861e-05,
+        "render_seconds": 0.0630690000107279
       },
       "svg": "examples/svg/branching.before.svg",
-      "svg_bytes": 20040,
-      "svg_verified_counts": {
+      "svg_bytes": 20155,
+      "metadata": "examples/svg/branching.before.json",
+      "metadata_bytes": 17198,
+      "svg_verified": {
         "nodes": 9,
-        "edges": 11
+        "logical_edges": 11,
+        "rendered_edges": 11,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 246.0,
+        "canvas_height_points": 1015.0,
+        "node_width_points": {
+          "minimum": 40.24000000000001,
+          "median": 85.0,
+          "maximum": 109.0
+        }
       },
       "layout_graph_attributes": {
         "rankdir": "TB",
         "ranksep": "0.45",
         "nodesep": "0.25",
-        "bgcolor": "white"
+        "bgcolor": "white",
+        "splines": "polyline"
+      },
+      "render_timeout_seconds": 300,
+      "repetition": 1
+    },
+    {
+      "model": "branching",
+      "kind": "real OpenVINO IR",
+      "variant": "compact",
+      "passes": [
+        "hide-constant-converts",
+        "hide-constants",
+        "highlight:projection"
+      ],
+      "label_detail": "compact",
+      "fanout_threshold": null,
+      "before_nodes": 9,
+      "before_edges": 11,
+      "after_nodes": 7,
+      "after_edges": 8,
+      "timings": {
+        "load_construct_seconds": 0.0026636659895302728,
+        "transform_seconds": 0.0001617920061107725,
+        "render_seconds": 0.057305124995764345
+      },
+      "svg": "examples/svg/branching.compact.svg",
+      "svg_bytes": 15934,
+      "metadata": "examples/svg/branching.compact.json",
+      "metadata_bytes": 16584,
+      "svg_verified": {
+        "nodes": 7,
+        "logical_edges": 8,
+        "rendered_edges": 8,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 239.0,
+        "canvas_height_points": 1067.0,
+        "node_width_points": {
+          "minimum": 40.24000000000001,
+          "median": 109.0,
+          "maximum": 112.75999999999999
+        }
+      },
+      "layout_graph_attributes": {
+        "rankdir": "TB",
+        "ranksep": "0.45",
+        "nodesep": "0.25",
+        "bgcolor": "white",
+        "splines": "polyline"
       },
       "render_timeout_seconds": 300,
       "repetition": 1
@@ -136,28 +283,45 @@
       "passes": [
         "hide-constant-converts",
         "hide-constants",
-        "highlight:projection"
+        "highlight:projection",
+        "reference-high-fanout"
       ],
+      "label_detail": "compact",
+      "fanout_threshold": 3,
       "before_nodes": 9,
       "before_edges": 11,
       "after_nodes": 7,
       "after_edges": 8,
       "timings": {
-        "load_construct_seconds": 0.004298125000786968,
-        "transform_seconds": 0.00017725000361679122,
-        "render_seconds": 0.10559162499703234
+        "load_construct_seconds": 0.002639332989929244,
+        "transform_seconds": 0.00018687501142267138,
+        "render_seconds": 0.07188562500232365
       },
       "svg": "examples/svg/branching.after.svg",
-      "svg_bytes": 17151,
-      "svg_verified_counts": {
+      "svg_bytes": 15934,
+      "metadata": "examples/svg/branching.after.json",
+      "metadata_bytes": 16584,
+      "svg_verified": {
         "nodes": 7,
-        "edges": 8
+        "logical_edges": 8,
+        "rendered_edges": 8,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 239.0,
+        "canvas_height_points": 1067.0,
+        "node_width_points": {
+          "minimum": 40.24000000000001,
+          "median": 109.0,
+          "maximum": 112.75999999999999
+        }
       },
       "layout_graph_attributes": {
         "rankdir": "TB",
         "ranksep": "0.45",
         "nodesep": "0.25",
-        "bgcolor": "white"
+        "bgcolor": "white",
+        "splines": "polyline"
       },
       "render_timeout_seconds": 300,
       "repetition": 1
@@ -167,30 +331,97 @@
       "kind": "real OpenVINO IR",
       "variant": "baseline",
       "passes": [],
+      "label_detail": "full",
+      "fanout_threshold": null,
       "before_nodes": 3216,
       "before_edges": 3789,
       "after_nodes": 3216,
       "after_edges": 3789,
       "timings": {
-        "load_construct_seconds": 0.41778616700321436,
-        "transform_seconds": 0.012163082996266894,
-        "render_seconds": 15.089149749997887
+        "load_construct_seconds": 0.22516737499972805,
+        "transform_seconds": 0.02802558300027158,
+        "render_seconds": 9.009393083993928
       },
       "svg": "examples/svg/tinyllama.before.svg",
       "svg_bytes": 7422800,
-      "svg_verified_counts": {
+      "metadata": "examples/svg/tinyllama.before.json",
+      "metadata_bytes": 6292454,
+      "svg_verified": {
         "nodes": 3216,
-        "edges": 3789
+        "logical_edges": 3789,
+        "rendered_edges": 3789,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 20671.0,
+        "canvas_height_points": 145845.0,
+        "node_width_points": {
+          "minimum": 52.0,
+          "median": 219.25,
+          "maximum": 310.0000000000001
+        }
       },
       "layout_graph_attributes": {
         "rankdir": "TB",
         "ranksep": "0.45",
         "nodesep": "0.25",
         "bgcolor": "white",
+        "splines": "line",
         "nslimit": "2",
         "nslimit1": "2",
-        "mclimit": "0.1",
-        "splines": "line"
+        "mclimit": "0.1"
+      },
+      "render_timeout_seconds": 300,
+      "repetition": 1
+    },
+    {
+      "model": "tinyllama",
+      "kind": "real OpenVINO IR",
+      "variant": "compact",
+      "passes": [
+        "hide-constant-converts",
+        "hide-constants",
+        "highlight:projection"
+      ],
+      "label_detail": "compact",
+      "fanout_threshold": null,
+      "before_nodes": 3216,
+      "before_edges": 3789,
+      "after_nodes": 1529,
+      "after_edges": 2028,
+      "timings": {
+        "load_construct_seconds": 0.23133791700820439,
+        "transform_seconds": 0.057232582999859005,
+        "render_seconds": 3.985786499993992
+      },
+      "svg": "examples/svg/tinyllama.compact.svg",
+      "svg_bytes": 4283406,
+      "metadata": "examples/svg/tinyllama.compact.json",
+      "metadata_bytes": 5392667,
+      "svg_verified": {
+        "nodes": 1529,
+        "logical_edges": 2028,
+        "rendered_edges": 2028,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 6542.0,
+        "canvas_height_points": 148862.0,
+        "node_width_points": {
+          "minimum": 40.25,
+          "median": 109.0,
+          "maximum": 182.5
+        }
+      },
+      "layout_graph_attributes": {
+        "rankdir": "TB",
+        "ranksep": "0.45",
+        "nodesep": "0.25",
+        "bgcolor": "white",
+        "splines": "line",
+        "nslimit": "2",
+        "nslimit1": "2",
+        "mclimit": "0.1"
       },
       "render_timeout_seconds": 300,
       "repetition": 1
@@ -202,32 +433,52 @@
       "passes": [
         "hide-constant-converts",
         "hide-constants",
-        "highlight:projection"
+        "highlight:projection",
+        "reference-high-fanout"
       ],
+      "label_detail": "compact",
+      "fanout_threshold": 3,
       "before_nodes": 3216,
       "before_edges": 3789,
       "after_nodes": 1529,
       "after_edges": 2028,
       "timings": {
-        "load_construct_seconds": 0.4107525840008748,
-        "transform_seconds": 0.04765991599560948,
-        "render_seconds": 6.586341500005801
+        "load_construct_seconds": 0.20849074999568984,
+        "transform_seconds": 0.050723167005344294,
+        "render_seconds": 1.0133857500040904
       },
       "svg": "examples/svg/tinyllama.after.svg",
-      "svg_bytes": 4650375,
-      "svg_verified_counts": {
+      "svg_bytes": 4164347,
+      "metadata": "examples/svg/tinyllama.after.json",
+      "metadata_bytes": 5394119,
+      "svg_verified": {
         "nodes": 1529,
-        "edges": 2028
+        "logical_edges": 2028,
+        "rendered_edges": 1778,
+        "referenced_edges": 250,
+        "reference_sources": 8,
+        "reference_outputs": 8,
+        "canvas_width_points": 1975.0,
+        "canvas_height_points": 152284.0,
+        "node_width_points": {
+          "minimum": 40.25,
+          "median": 109.0,
+          "maximum": 182.5
+        }
       },
       "layout_graph_attributes": {
         "rankdir": "TB",
         "ranksep": "0.45",
         "nodesep": "0.25",
         "bgcolor": "white",
+        "splines": "polyline",
         "nslimit": "2",
         "nslimit1": "2",
         "mclimit": "0.1",
-        "splines": "line"
+        "label": "References: out p \u2192 @node:p (N uses); in q \u2190 @node:p links to its source.\\nEvery reference is a connection; complete attributes and connectivity are in JSON.",
+        "labelloc": "t",
+        "fontname": "Helvetica",
+        "fontsize": "10"
       },
       "render_timeout_seconds": 300,
       "repetition": 1
@@ -239,36 +490,52 @@
       "passes": [
         "hide-constant-converts",
         "hide-constants",
-        "highlight:projection"
+        "highlight:projection",
+        "reference-high-fanout"
       ],
+      "label_detail": "compact",
+      "fanout_threshold": 3,
       "before_nodes": 5101,
       "before_edges": 5100,
       "after_nodes": 5100,
       "after_edges": 5050,
       "timings": {
-        "load_construct_seconds": 0.04115233299671672,
-        "transform_seconds": 0.06839712500368478,
-        "render_seconds": 4.351990457995271
+        "load_construct_seconds": 0.022663249998004176,
+        "transform_seconds": 0.10497495900199283,
+        "render_seconds": 3.7138286249974044
       },
       "svg": "examples/svg/synthetic_5101.after.svg",
-      "svg_bytes": 9966743,
-      "svg_verified_counts": {
+      "svg_bytes": 9173793,
+      "metadata": "examples/svg/synthetic_5101.after.json",
+      "metadata_bytes": 8577556,
+      "svg_verified": {
         "nodes": 5100,
-        "edges": 5050
+        "logical_edges": 5050,
+        "rendered_edges": 5050,
+        "referenced_edges": 0,
+        "reference_sources": 0,
+        "reference_outputs": 0,
+        "canvas_width_points": 6790.0,
+        "canvas_height_points": 13981.0,
+        "node_width_points": {
+          "minimum": 40.0,
+          "median": 44.5,
+          "maximum": 118.0
+        }
       },
       "layout_graph_attributes": {
         "rankdir": "TB",
         "ranksep": "0.45",
         "nodesep": "0.25",
         "bgcolor": "white",
+        "splines": "line",
         "nslimit": "2",
         "nslimit1": "2",
-        "mclimit": "0.1",
-        "splines": "line"
+        "mclimit": "0.1"
       },
       "render_timeout_seconds": 300,
       "repetition": 1
     }
   ],
-  "completed_utc": "2026-10-11T19:17:24.820008+00:00"
+  "completed_utc": "2026-10-23T17:30:27.995553+00:00"
 }

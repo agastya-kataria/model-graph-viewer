@@ -1,0 +1,668 @@
+{
+  "schema_version": 1,
+  "nodes": {
+    "40": {
+      "node_id": 40,
+      "node_type": "Multiply",
+      "name": "__module.model.layers.0.input_layernorm/aten::mul/Multiply_1",
+      "attributes": {
+        "auto_broadcast": "numpy",
+        "focus": "Neighborhood only; external connections omitted"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            1,
+            1,
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "1": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {
+          "0": {
+            "source_id": 25,
+            "tensor": {
+              "shape": [
+                1,
+                1,
+                2048
+              ],
+              "dtype": "f32"
+            },
+            "shared": false,
+            "convert_id": 26,
+            "stored_dtype": "f16",
+            "source_shared": false
+          }
+        }
+      }
+    },
+    "43": {
+      "node_id": 43,
+      "node_type": "MatMul",
+      "name": "__module.model.layers.0.self_attn.q_proj/ov_ext::linear/MatMul",
+      "attributes": {
+        "transpose_a": false,
+        "transpose_b": true,
+        "focus": "Neighborhood only; external connections omitted"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "1": {
+          "shape": [
+            2048,
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {
+          "1": {
+            "source_id": 41,
+            "tensor": {
+              "shape": [
+                2048,
+                2048
+              ],
+              "dtype": "f32"
+            },
+            "shared": false,
+            "convert_id": 42,
+            "stored_dtype": "f16",
+            "source_shared": false
+          }
+        }
+      }
+    },
+    "50": {
+      "node_id": 50,
+      "node_type": "ShapeOf",
+      "name": "ShapeOf_61013",
+      "attributes": {
+        "output_type": "i64",
+        "focus": "Neighborhood only; external connections omitted"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            3
+          ],
+          "dtype": "i64"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {}
+      }
+    },
+    "98": {
+      "node_id": 98,
+      "node_type": "MatMul",
+      "name": "__module.model.layers.0.self_attn.k_proj/ov_ext::linear/MatMul",
+      "attributes": {
+        "transpose_a": false,
+        "transpose_b": true,
+        "focus": "Neighborhood only; external connections omitted"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "1": {
+          "shape": [
+            256,
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            256
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {
+          "1": {
+            "source_id": 96,
+            "tensor": {
+              "shape": [
+                256,
+                2048
+              ],
+              "dtype": "f32"
+            },
+            "shared": false,
+            "convert_id": 97,
+            "stored_dtype": "f16",
+            "source_shared": false
+          }
+        }
+      }
+    },
+    "157": {
+      "node_id": 157,
+      "node_type": "MatMul",
+      "name": "__module.model.layers.0.self_attn.v_proj/ov_ext::linear/MatMul",
+      "attributes": {
+        "transpose_a": false,
+        "transpose_b": true,
+        "focus": "Neighborhood only; external connections omitted"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "1": {
+          "shape": [
+            256,
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            256
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {
+          "1": {
+            "source_id": 155,
+            "tensor": {
+              "shape": [
+                256,
+                2048
+              ],
+              "dtype": "f32"
+            },
+            "shared": false,
+            "convert_id": 156,
+            "stored_dtype": "f16",
+            "source_shared": false
+          }
+        }
+      }
+    }
+  },
+  "edges": [
+    {
+      "from_node": 40,
+      "from_port": 0,
+      "to_node": 43,
+      "to_port": 0,
+      "tensor": {
+        "shape": [
+          "?",
+          "?",
+          2048
+        ],
+        "dtype": "f32"
+      }
+    },
+    {
+      "from_node": 40,
+      "from_port": 0,
+      "to_node": 50,
+      "to_port": 0,
+      "tensor": {
+        "shape": [
+          "?",
+          "?",
+          2048
+        ],
+        "dtype": "f32"
+      }
+    },
+    {
+      "from_node": 40,
+      "from_port": 0,
+      "to_node": 98,
+      "to_port": 0,
+      "tensor": {
+        "shape": [
+          "?",
+          "?",
+          2048
+        ],
+        "dtype": "f32"
+      }
+    },
+    {
+      "from_node": 40,
+      "from_port": 0,
+      "to_node": 157,
+      "to_port": 0,
+      "tensor": {
+        "shape": [
+          "?",
+          "?",
+          2048
+        ],
+        "dtype": "f32"
+      }
+    }
+  ],
+  "view": {
+    "nodes": {
+      "40": {
+        "node_id": 40,
+        "node_type": "Multiply",
+        "name": "__module.model.layers.0.input_layernorm/aten::mul/Multiply_1",
+        "attributes": {
+          "auto_broadcast": "numpy",
+          "focus": "Neighborhood only; external connections omitted"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              1,
+              1,
+              2048
+            ],
+            "dtype": "f32"
+          },
+          "1": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "visual": {
+          "border_color": "red",
+          "constant_shared": false,
+          "reference_outputs": [
+            0
+          ],
+          "hidden_inputs": {
+            "0": {
+              "source_id": 25,
+              "tensor": {
+                "shape": [
+                  1,
+                  1,
+                  2048
+                ],
+                "dtype": "f32"
+              },
+              "shared": false,
+              "convert_id": 26,
+              "stored_dtype": "f16",
+              "source_shared": false
+            }
+          }
+        }
+      },
+      "43": {
+        "node_id": 43,
+        "node_type": "MatMul",
+        "name": "__module.model.layers.0.self_attn.q_proj/ov_ext::linear/MatMul",
+        "attributes": {
+          "transpose_a": false,
+          "transpose_b": true,
+          "focus": "Neighborhood only; external connections omitted"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          },
+          "1": {
+            "shape": [
+              2048,
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "visual": {
+          "border_color": null,
+          "constant_shared": false,
+          "reference_outputs": [],
+          "hidden_inputs": {
+            "1": {
+              "source_id": 41,
+              "tensor": {
+                "shape": [
+                  2048,
+                  2048
+                ],
+                "dtype": "f32"
+              },
+              "shared": false,
+              "convert_id": 42,
+              "stored_dtype": "f16",
+              "source_shared": false
+            }
+          }
+        }
+      },
+      "50": {
+        "node_id": 50,
+        "node_type": "ShapeOf",
+        "name": "ShapeOf_61013",
+        "attributes": {
+          "output_type": "i64",
+          "focus": "Neighborhood only; external connections omitted"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              3
+            ],
+            "dtype": "i64"
+          }
+        },
+        "visual": {
+          "border_color": null,
+          "constant_shared": false,
+          "reference_outputs": [],
+          "hidden_inputs": {}
+        }
+      },
+      "98": {
+        "node_id": 98,
+        "node_type": "MatMul",
+        "name": "__module.model.layers.0.self_attn.k_proj/ov_ext::linear/MatMul",
+        "attributes": {
+          "transpose_a": false,
+          "transpose_b": true,
+          "focus": "Neighborhood only; external connections omitted"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          },
+          "1": {
+            "shape": [
+              256,
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              256
+            ],
+            "dtype": "f32"
+          }
+        },
+        "visual": {
+          "border_color": null,
+          "constant_shared": false,
+          "reference_outputs": [],
+          "hidden_inputs": {
+            "1": {
+              "source_id": 96,
+              "tensor": {
+                "shape": [
+                  256,
+                  2048
+                ],
+                "dtype": "f32"
+              },
+              "shared": false,
+              "convert_id": 97,
+              "stored_dtype": "f16",
+              "source_shared": false
+            }
+          }
+        }
+      },
+      "157": {
+        "node_id": 157,
+        "node_type": "MatMul",
+        "name": "__module.model.layers.0.self_attn.v_proj/ov_ext::linear/MatMul",
+        "attributes": {
+          "transpose_a": false,
+          "transpose_b": true,
+          "focus": "Neighborhood only; external connections omitted"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          },
+          "1": {
+            "shape": [
+              256,
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              256
+            ],
+            "dtype": "f32"
+          }
+        },
+        "visual": {
+          "border_color": null,
+          "constant_shared": false,
+          "reference_outputs": [],
+          "hidden_inputs": {
+            "1": {
+              "source_id": 155,
+              "tensor": {
+                "shape": [
+                  256,
+                  2048
+                ],
+                "dtype": "f32"
+              },
+              "shared": false,
+              "convert_id": 156,
+              "stored_dtype": "f16",
+              "source_shared": false
+            }
+          }
+        }
+      }
+    },
+    "edges": [
+      {
+        "from_node": 40,
+        "from_port": 0,
+        "to_node": 43,
+        "to_port": 0,
+        "tensor": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "representation": "reference"
+      },
+      {
+        "from_node": 40,
+        "from_port": 0,
+        "to_node": 50,
+        "to_port": 0,
+        "tensor": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "representation": "reference"
+      },
+      {
+        "from_node": 40,
+        "from_port": 0,
+        "to_node": 98,
+        "to_port": 0,
+        "tensor": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "representation": "reference"
+      },
+      {
+        "from_node": 40,
+        "from_port": 0,
+        "to_node": 157,
+        "to_port": 0,
+        "tensor": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "representation": "reference"
+      }
+    ]
+  },
+  "rendering": {
+    "label_detail": "compact",
+    "rendered_edges": 0,
+    "referenced_edges": 4
+  }
+}

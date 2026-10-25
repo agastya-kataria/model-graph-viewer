@@ -2,12 +2,13 @@ from dataclasses import asdict
 
 import pytest
 
-from model_graph_viewer.graph import Edge, Graph, Node, TensorMetadata
+from model_graph_viewer.graph import ConstantAnnotation, Edge, Graph, Node, TensorMetadata
 from model_graph_viewer.passes import (
     PASS_REGISTRY,
     HideConstantConverts,
     HideConstants,
     HighlightNodes,
+    ReferenceHighFanout,
     apply_passes,
     create_pass,
     register_pass,
@@ -336,3 +337,141 @@ def test_constant_with_unrelated_incoming_connection_is_retained():
     assert set(graph.nodes) == {0, 1, 2}
     assert list(graph.edges) == [Edge(0, 0, 1, 0)]
     assert graph.nodes[2].visual.hidden_inputs[0].source_id == 1
+
+
+def fanout_graph(count=4):
+    return Graph(
+        [node(-9), *(node(index, inputs=(0,)) for index in range(count))],
+        [Edge(-9, 0, index, 0, F32) for index in range(count)],
+    )
+
+
+@pytest.mark.parametrize(
+    "count, threshold, selected", [(3, 3, False), (4, 3, True), (1, 1, False), (2, 1, True)]
+)
+def test_fanout_reference_threshold_is_strict_and_preserves_connectivity(
+    count, threshold, selected
+):
+    graph = fanout_graph(count)
+    before = graph.copy()
+
+    result = apply_passes(graph, [ReferenceHighFanout(threshold)])
+
+    assert result is graph
+    assert graph.nodes[-9].visual.reference_outputs == ({0} if selected else set())
+    assert list(graph.edges) == list(before.edges)
+    assert set(graph.nodes) == set(before.nodes)
+    for node_id, current in graph.nodes.items():
+        assert list(graph.incoming(node_id)) == list(before.incoming(node_id))
+        assert list(graph.outgoing(node_id)) == list(before.outgoing(node_id))
+        expected = asdict(before.nodes[node_id])
+        if node_id == -9 and selected:
+            expected["visual"]["reference_outputs"] = {0}
+        assert asdict(current) == expected
+
+
+def test_fanout_counts_all_output_connections_and_repeated_uses_within_one_consumer():
+    graph = Graph(
+        [node(0, outputs=(0, 7, 9)), node(1, inputs=(0, 2, 4, 6))],
+        [Edge(0, 0, 1, 0), Edge(0, 0, 1, 2), Edge(0, 7, 1, 4), Edge(0, 7, 1, 6)],
+    )
+
+    apply_passes(graph, [ReferenceHighFanout()])
+
+    assert graph.nodes[0].visual.reference_outputs == {0, 7}
+    assert graph.nodes[1].visual.reference_outputs == set()
+    assert len(graph.edges) == 4
+    assert {edge.to_port for edge in graph.edges} == {0, 2, 4, 6}
+
+
+def test_fanout_references_preserve_highlights_attributes_and_hidden_inputs():
+    graph = fanout_graph()
+    source = graph.nodes[-9]
+    source.input_ports[3] = F16
+    source.attributes["mode"] = "numpy"
+    source.visual.hidden_inputs[3] = ConstantAnnotation(-20, F16)
+    source.visual.constant_shared = True
+    apply_passes(graph, [HighlightNodes(["same"])])
+    before = graph.copy()
+
+    apply_passes(graph, [ReferenceHighFanout()])
+
+    for node_id, current in graph.nodes.items():
+        expected = asdict(before.nodes[node_id])
+        if node_id == -9:
+            expected["visual"]["reference_outputs"] = {0}
+        assert asdict(current) == expected
+    duplicate = before.copy()
+    apply_passes(duplicate, [ReferenceHighFanout(), HighlightNodes(["same"])])
+    assert graph.nodes == duplicate.nodes
+
+
+def test_fanout_references_are_idempotent_and_reselected_after_connectivity_changes():
+    graph = fanout_graph()
+    transformation = ReferenceHighFanout()
+    apply_passes(graph, [transformation])
+    expected = graph.copy()
+
+    apply_passes(graph, [transformation])
+    assert graph.nodes == expected.nodes
+    assert list(graph.edges) == list(expected.edges)
+
+    removed = next(iter(graph.edges))
+    graph.remove_edge(removed)
+    apply_passes(graph, [transformation])
+    assert not graph.nodes[-9].visual.reference_outputs
+
+    graph.add_edge(removed)
+    apply_passes(graph, [transformation])
+    assert graph.nodes[-9].visual.reference_outputs == {0}
+    apply_passes(graph, [ReferenceHighFanout(threshold=4)])
+    assert not any(current.visual.reference_outputs for current in graph.nodes.values())
+
+
+@pytest.mark.parametrize("referenced_first", [False, True])
+def test_fanout_references_do_not_interfere_with_constant_hiding(referenced_first):
+    graph = fanout_graph()
+    graph.nodes[-9].node_type = "Constant"
+    reference = ReferenceHighFanout()
+    hiding = HideConstants()
+    apply_passes(graph, [reference, hiding] if referenced_first else [hiding, reference])
+
+    assert set(graph.nodes) == {0, 1, 2, 3}
+    assert not graph.edges
+    for consumer in graph.nodes.values():
+        assert consumer.visual.hidden_inputs[0].source_id == -9
+        assert consumer.visual.hidden_inputs[0].shared
+        assert not consumer.visual.reference_outputs
+
+
+@pytest.mark.parametrize("referenced_first", [False, True])
+def test_fanout_references_do_not_obscure_constant_convert_patterns(referenced_first):
+    graph = Graph(
+        [node(0, "Constant", tensor=F16), node(1, "Convert", inputs=(0,))]
+        + [node(index, inputs=(0,)) for index in range(2, 6)],
+        [Edge(0, 0, 1, 0, F16)] + [Edge(1, 0, index, 0, F32) for index in range(2, 6)],
+    )
+    reference = ReferenceHighFanout()
+    hiding = HideConstantConverts()
+    apply_passes(graph, [reference, hiding] if referenced_first else [hiding, reference])
+
+    assert set(graph.nodes) == {2, 3, 4, 5}
+    assert not graph.edges
+    for consumer in graph.nodes.values():
+        annotation = consumer.visual.hidden_inputs[0]
+        assert annotation.source_id == 0
+        assert annotation.convert_id == 1
+        assert annotation.tensor == F32
+
+
+@pytest.mark.parametrize("threshold", [0, -1, True, False, 3.0, "3", None])
+def test_fanout_references_reject_invalid_thresholds(threshold):
+    with pytest.raises(ValueError, match="positive integer"):
+        ReferenceHighFanout(threshold)
+
+
+def test_fanout_reference_pass_can_be_created_from_registry():
+    transformation = create_pass("reference-high-fanout", threshold=2)
+    graph = fanout_graph(3)
+    apply_passes(graph, [transformation])
+    assert graph.nodes[-9].visual.reference_outputs == {0}

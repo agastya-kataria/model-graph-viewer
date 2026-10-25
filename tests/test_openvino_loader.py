@@ -8,6 +8,7 @@ import openvino as ov
 import pytest
 from openvino import opset13 as ops
 
+from model_graph_viewer.metadata import snapshot_graph
 from model_graph_viewer.openvino_loader import ModelLoadError, OpenVINOLoader
 
 
@@ -83,7 +84,7 @@ def test_constant_data_and_attributes_are_never_read(loader, monkeypatch):
     assert node.attributes == {}
     assert node.output_ports[0].shape == (2,)
     assert node.output_ports[0].dtype == "f32"
-    serialized = json.dumps([asdict(n) for n in graph.nodes.values()], allow_nan=False)
+    serialized = json.dumps(snapshot_graph(graph), allow_nan=False)
     assert "913.25" not in serialized
     assert "-71.5" not in serialized
 
@@ -100,7 +101,7 @@ def test_attributes_are_portable_and_model_is_unmodified(loader):
     graph = loader.from_model(model)
     node = next(n for n in graph.nodes.values() if n.node_type == "Convolution")
     assert node.attributes["strides"] == [1, 1]
-    json.dumps([asdict(n) for n in graph.nodes.values()], allow_nan=False)
+    json.dumps(snapshot_graph(graph), allow_nan=False)
     node.name = "changed in detached graph"
     node.attributes["strides"][0] = 99
     assert convolution.get_attributes()["strides"] == [1, 1]

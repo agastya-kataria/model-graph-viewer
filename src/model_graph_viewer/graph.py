@@ -49,6 +49,8 @@ class Visualization:
     hidden_inputs: dict[int, ConstantAnnotation] = field(default_factory=dict)
     # Retain sharing provenance when a previous pass removes a consumer.
     constant_shared: bool = False
+    # Render connections from these outputs as references without changing edges.
+    reference_outputs: set[int] = field(default_factory=set)
 
 
 @dataclass
@@ -127,6 +129,11 @@ class Graph:
                 if not isinstance(index, int) or isinstance(index, bool) or index < 0:
                     raise ValueError(f"Node {node.node_id} has invalid {direction} port {index!r}")
                 Graph._validate_tensor(tensor, f"Node {node.node_id} {direction} port {index}")
+        for index in node.visual.reference_outputs:
+            if not isinstance(index, int) or isinstance(index, bool) or index < 0:
+                raise ValueError(f"Node {node.node_id} has invalid reference output port {index!r}")
+            if index not in node.output_ports:
+                raise ValueError(f"Node {node.node_id} has a reference for absent output {index}")
         for index, annotation in node.visual.hidden_inputs.items():
             if not isinstance(index, int) or isinstance(index, bool) or index < 0:
                 raise ValueError(f"Node {node.node_id} has invalid hidden input port {index!r}")

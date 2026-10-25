@@ -84,9 +84,10 @@ def test_shape_forms_survive_graph_copy(shape):
 
 
 def test_copy_detaches_all_mutable_node_metadata():
-    original = node(0, inputs=(3,))
+    original = node(0, inputs=(3,), outputs=(2,))
     original.attributes["nested"] = {"axes": [1, 2]}
     original.visual.hidden_inputs[3] = ConstantAnnotation(9, TensorMetadata((), "i64"))
+    original.visual.reference_outputs.add(2)
     graph = Graph([original])
     duplicate = graph.copy()
     copied = duplicate.nodes[0]
@@ -94,15 +95,40 @@ def test_copy_detaches_all_mutable_node_metadata():
     copied.attributes["nested"]["axes"].append(3)
     copied.visual.border_color = "red"
     copied.visual.hidden_inputs.clear()
+    copied.visual.reference_outputs.clear()
     copied.input_ports[5] = TensorMetadata((4,), "f32")
 
     assert original.name == "same"
     assert original.attributes["nested"] == {"axes": [1, 2]}
     assert original.visual.border_color is None
     assert set(original.visual.hidden_inputs) == {3}
+    assert original.visual.reference_outputs == {2}
     assert set(original.input_ports) == {3}
     graph.validate()
     duplicate.validate()
+
+
+@pytest.mark.parametrize("invalid_port", [True, False, 1.0, -1, "1", None])
+def test_reference_outputs_reject_invalid_port_indices(invalid_port):
+    source = node(0, outputs=(0, 1))
+    source.visual.reference_outputs.add(invalid_port)
+    with pytest.raises(ValueError, match="invalid reference output port"):
+        Graph([source])
+
+
+def test_reference_outputs_must_resolve_to_existing_output_ports():
+    source = node(-4, outputs=(2,))
+    source.visual.reference_outputs.add(2)
+    graph = Graph([source])
+    graph.validate()
+
+    source.visual.reference_outputs.add(5)
+    with pytest.raises(ValueError, match="reference for absent output 5"):
+        graph.validate()
+    source.visual.reference_outputs.remove(5)
+    source.output_ports.clear()
+    with pytest.raises(ValueError, match="reference for absent output 2"):
+        graph.validate()
 
 
 def test_collections_and_edge_metadata_are_read_only():

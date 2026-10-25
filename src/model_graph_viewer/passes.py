@@ -27,6 +27,28 @@ class HighlightNodes:
         return graph
 
 
+class ReferenceHighFanout:
+    """Reference outputs of nodes with more than ``threshold`` outgoing edges.
+
+    Connections remain in the graph; only their rendering changes. Selection
+    uses the current total edge count across a node's output ports, including
+    multiple connections to one consumer, and is recomputed on every application.
+    """
+
+    def __init__(self, threshold: int = 3) -> None:
+        if not isinstance(threshold, int) or isinstance(threshold, bool) or threshold <= 0:
+            raise ValueError("The fan-out threshold must be a positive integer")
+        self.threshold = threshold
+
+    def apply(self, graph: Graph) -> Graph:
+        for node in graph.nodes.values():
+            outgoing = graph.outgoing(node.node_id)
+            node.visual.reference_outputs.clear()
+            if len(outgoing) > self.threshold:
+                node.visual.reference_outputs.update(edge.from_port for edge in outgoing)
+        return graph
+
+
 def _remember_constant_sharing(graph: Graph) -> None:
     for node in graph.nodes.values():
         if node.node_type == "Constant":
@@ -126,6 +148,7 @@ PASS_REGISTRY: dict[str, Callable[..., TransformationPass]] = {
     "highlight": HighlightNodes,
     "hide-constants": HideConstants,
     "hide-constant-converts": HideConstantConverts,
+    "reference-high-fanout": ReferenceHighFanout,
 }
 
 

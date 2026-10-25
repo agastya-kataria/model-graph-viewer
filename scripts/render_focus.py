@@ -8,6 +8,8 @@ import json
 from copy import deepcopy
 from pathlib import Path
 
+from render_fanout_focus import add_boundary_caption
+
 from model_graph_viewer import (
     Graph,
     HideConstantConverts,
@@ -17,6 +19,7 @@ from model_graph_viewer import (
     load_model,
     render_svg,
 )
+from model_graph_viewer.metadata import snapshot_graph
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -70,11 +73,26 @@ def main() -> None:
     graph = load_model(args.model)
     focus, selected = focused_graph(graph)
     name = focus.nodes[selected].name
+    original = snapshot_graph(focus)
+    selected_ids = set(focus.nodes)
+    omitted = sum(
+        (edge.from_node in selected_ids) != (edge.to_node in selected_ids) for edge in graph.edges
+    )
     args.output_directory.mkdir(parents=True, exist_ok=True)
-    render_svg(focus, args.output_directory / "tinyllama.focus.before.svg")
+    before_path = args.output_directory / "tinyllama.focus.before.svg"
+    render_svg(focus, before_path, _original=original)
+    add_boundary_caption(
+        before_path,
+        f"MatMul {selected} neighborhood: {omitted} external connections intentionally omitted.",
+    )
     before = {"nodes": len(focus.nodes), "edges": len(focus.edges)}
     apply_passes(focus, [HideConstantConverts(), HideConstants(), HighlightNodes([name])])
-    render_svg(focus, args.output_directory / "tinyllama.focus.after.svg")
+    after_path = args.output_directory / "tinyllama.focus.after.svg"
+    render_svg(focus, after_path, _original=original)
+    add_boundary_caption(
+        after_path,
+        f"MatMul {selected} neighborhood: {omitted} external connections intentionally omitted.",
+    )
     report = {
         "selection": "First MatMul in topological graph order with Constant -> Convert on input 1",
         "selected_node_id": selected,

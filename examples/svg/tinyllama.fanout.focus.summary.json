@@ -1,0 +1,42 @@
+{
+  "selection": "Smallest qualifying fan-out; ties follow topological graph order",
+  "preparation": [
+    "hide-constant-converts",
+    "hide-constants"
+  ],
+  "selected_node_id": 40,
+  "selected_name": "__module.model.layers.0.input_layernorm/aten::mul/Multiply_1",
+  "fanout_threshold": 3,
+  "before": {
+    "nodes": 5,
+    "logical_edges": 4,
+    "rendered_edges": 4,
+    "referenced_edges": 0,
+    "reference_sources": 0,
+    "reference_outputs": 0,
+    "canvas_width_points": 680.0,
+    "canvas_height_points": 376.0,
+    "node_width_points": {
+      "minimum": 76.75,
+      "median": 160.75,
+      "maximum": 165.25
+    }
+  },
+  "after": {
+    "nodes": 5,
+    "logical_edges": 4,
+    "rendered_edges": 0,
+    "referenced_edges": 4,
+    "reference_sources": 1,
+    "reference_outputs": 1,
+    "canvas_width_points": 810.0,
+    "canvas_height_points": 231.0,
+    "node_width_points": {
+      "minimum": 76.75,
+      "median": 160.75,
+      "maximum": 165.25
+    }
+  },
+  "boundary": "6 external connections intentionally omitted in both views",
+  "metadata_scope": "Original and view snapshots describe this prepared neighborhood"
+}

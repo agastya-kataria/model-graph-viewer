@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="810pt" height="231pt" viewBox="0 0 810 231">
+<rect x="0.0" y="0.0" width="810.0" height="231.0" fill="white" /><text x="8" y="16" font-family="Helvetica" font-size="10">Source 40 and all direct consumers. Neighborhood boundary: 6 external connections omitted.</text><g transform="translate(0 36)"><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 191.25)">
+<polygon fill="white" stroke="none" points="-4,4 -4,-191.25 806,-191.25 806,4 -4,4" />
+<text xml:space="preserve" text-anchor="middle" x="401" y="-173.75" font-family="Helvetica,sans-Serif" font-size="10.00">References: out p → @node:p (N uses); in q ← @node:p links to its source.</text>
+<text xml:space="preserve" text-anchor="middle" x="401" y="-161" font-family="Helvetica,sans-Serif" font-size="10.00">Every reference is a connection; complete attributes and connectivity are in JSON.</text>
+
+<g id="node-40" class="node">
+<title>n40</title>
+<g id="a_node-40"><a xlink:title="__module.model.layers.0.input_layernorm/aten::mul/Multiply_1 (Multiply, id: 40)">
+<polygon fill="none" stroke="red" stroke-width="2" points="1,-9.62 1,-145.62 161.75,-145.62 161.75,-9.62 1,-9.62" />
+<polygon fill="none" stroke="#d1d5db" points="8,-122.88 8,-138.62 80.38,-138.62 80.38,-122.88 8,-122.88" />
+<text xml:space="preserve" text-anchor="start" x="36.69" y="-128.12" font-family="Helvetica,sans-Serif" font-size="9.00">in 0</text>
+<polygon fill="none" stroke="#d1d5db" points="82.38,-122.88 82.38,-138.62 154.75,-138.62 154.75,-122.88 82.38,-122.88" />
+<text xml:space="preserve" text-anchor="start" x="111.06" y="-128.12" font-family="Helvetica,sans-Serif" font-size="9.00">in 1</text>
+<polygon fill="#f1f5f9" stroke="none" points="2,-97.62 2,-116.88 160.75,-116.88 160.75,-97.62 2,-97.62" />
+<text xml:space="preserve" text-anchor="start" x="62.62" y="-104.38" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="10.00">Multiply</text>
+<text xml:space="preserve" text-anchor="start" x="6" y="-85.38" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#64748b">id: 40</text>
+<text xml:space="preserve" text-anchor="start" x="6" y="-66.12" font-family="Helvetica,sans-Serif" font-size="10.00">auto_broadcast:numpy</text>
+<polygon fill="#fff8e1" stroke="none" points="2,-39.88 2,-59.12 160.75,-59.12 160.75,-39.88 2,-39.88" />
+<text xml:space="preserve" text-anchor="start" x="6" y="-46.88" font-family="Helvetica,sans-Serif" font-size="10.00">[0]: f32[1, 1, 2048] (converted #26)</text>
+<g id="a_source-40-0"><a xlink:href="#node-40" xlink:title="__module.model.layers.0.input_layernorm/aten::mul/Multiply_1 (Multiply, id: 40)">
+<polygon fill="none" stroke="#d1d5db" points="8,-16.62 8,-33.88 154.75,-33.88 154.75,-16.62 8,-16.62" />
+<text xml:space="preserve" text-anchor="start" x="33.38" y="-21.88" font-family="Helvetica,sans-Serif" font-size="9.00">out 0 → @40:0 (4 uses)</text>
+</a>
+</g>
+</a>
+</g>
+</g>
+
+<g id="node-43" class="node">
+<title>n43</title>
+<g id="a_node-43"><a xlink:title="__module.model.layers.0.self_attn.q_proj/ov_ext::linear/MatMul (MatMul, id: 43)">
+<polygon fill="none" stroke="#64748b" points="180.75,0 180.75,-155.25 346,-155.25 346,0 180.75,0" />
+<g id="a_ref-40-0-43-0"><a xlink:href="#node-40" xlink:title="40:out 0 → 43:in 0">
+<polygon fill="none" stroke="#d1d5db" points="187.75,-131 187.75,-148.25 282.62,-148.25 282.62,-131 187.75,-131" />
+<text xml:space="preserve" text-anchor="start" x="207.44" y="-136.25" font-family="Helvetica,sans-Serif" font-size="9.00">in 0 ← @40:0</text>
+</a>
+</g>
+<polygon fill="none" stroke="#d1d5db" points="284.62,-131 284.62,-148.25 339,-148.25 339,-131 284.62,-131" />
+<text xml:space="preserve" text-anchor="start" x="304.31" y="-137" font-family="Helvetica,sans-Serif" font-size="9.00">in 1</text>
+<polygon fill="#90caf9" stroke="none" points="181.75,-105.75 181.75,-125 345,-125 345,-105.75 181.75,-105.75" />
+<text xml:space="preserve" text-anchor="start" x="246.5" y="-112.5" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="10.00">MatMul</text>
+<text xml:space="preserve" text-anchor="start" x="185.75" y="-93.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#64748b">id: 43</text>
+<text xml:space="preserve" text-anchor="start" x="185.75" y="-74.25" font-family="Helvetica,sans-Serif" font-size="10.00">transpose_a:False</text>
+<text xml:space="preserve" text-anchor="start" x="185.75" y="-55" font-family="Helvetica,sans-Serif" font-size="10.00">transpose_b:True</text>
+<polygon fill="#fff8e1" stroke="none" points="181.75,-28.75 181.75,-48 345,-48 345,-28.75 181.75,-28.75" />
+<text xml:space="preserve" text-anchor="start" x="185.75" y="-35.75" font-family="Helvetica,sans-Serif" font-size="10.00">[1]: f32[2048, 2048] (converted #42)</text>
+<polygon fill="none" stroke="#d1d5db" points="187.75,-7 187.75,-22.75 339,-22.75 339,-7 187.75,-7" />
+<text xml:space="preserve" text-anchor="start" x="253.25" y="-12.25" font-family="Helvetica,sans-Serif" font-size="9.00">out 0</text>
+</a>
+</g>
+</g>
+
+<g id="node-50" class="node">
+<title>n50</title>
+<g id="a_node-50"><a xlink:title="ShapeOf_61013 (ShapeOf, id: 50)">
+<polygon fill="none" stroke="#64748b" points="364,-19.25 364,-136 440.75,-136 440.75,-19.25 364,-19.25" />
+<g id="a_ref-40-0-50-0"><a xlink:href="#node-40" xlink:title="40:out 0 → 50:in 0">
+<polygon fill="none" stroke="#d1d5db" points="371,-111.75 371,-129 433.75,-129 433.75,-111.75 371,-111.75" />
+<text xml:space="preserve" text-anchor="start" x="374.62" y="-117" font-family="Helvetica,sans-Serif" font-size="9.00">in 0 ← @40:0</text>
+</a>
+</g>
+<polygon fill="#f1f5f9" stroke="none" points="365,-86.5 365,-105.75 439.75,-105.75 439.75,-86.5 365,-86.5" />
+<text xml:space="preserve" text-anchor="start" x="382.5" y="-93.25" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="10.00">ShapeOf</text>
+<text xml:space="preserve" text-anchor="start" x="369" y="-74.25" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#64748b">id: 50</text>
+<text xml:space="preserve" text-anchor="start" x="369" y="-55" font-family="Helvetica,sans-Serif" font-size="10.00">output_type:i64</text>
+<polygon fill="none" stroke="#d1d5db" points="371,-26.25 371,-42 433.75,-42 433.75,-26.25 371,-26.25" />
+<text xml:space="preserve" text-anchor="start" x="392.25" y="-31.5" font-family="Helvetica,sans-Serif" font-size="9.00">out 0</text>
+</a>
+</g>
+</g>
+
+<g id="node-98" class="node">
+<title>n98</title>
+<g id="a_node-98"><a xlink:title="__module.model.layers.0.self_attn.k_proj/ov_ext::linear/MatMul (MatMul, id: 98)">
+<polygon fill="none" stroke="#64748b" points="458.38,0 458.38,-155.25 618.38,-155.25 618.38,0 458.38,0" />
+<g id="a_ref-40-0-98-0"><a xlink:href="#node-40" xlink:title="40:out 0 → 98:in 0">
+<polygon fill="none" stroke="#d1d5db" points="465.38,-131 465.38,-148.25 557.62,-148.25 557.62,-131 465.38,-131" />
+<text xml:space="preserve" text-anchor="start" x="483.75" y="-136.25" font-family="Helvetica,sans-Serif" font-size="9.00">in 0 ← @40:0</text>
+</a>
+</g>
+<polygon fill="none" stroke="#d1d5db" points="559.62,-131 559.62,-148.25 611.38,-148.25 611.38,-131 559.62,-131" />
+<text xml:space="preserve" text-anchor="start" x="578" y="-137" font-family="Helvetica,sans-Serif" font-size="9.00">in 1</text>
+<polygon fill="#90caf9" stroke="none" points="459.38,-105.75 459.38,-125 617.38,-125 617.38,-105.75 459.38,-105.75" />
+<text xml:space="preserve" text-anchor="start" x="521.5" y="-112.5" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="10.00">MatMul</text>
+<text xml:space="preserve" text-anchor="start" x="463.38" y="-93.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#64748b">id: 98</text>
+<text xml:space="preserve" text-anchor="start" x="463.38" y="-74.25" font-family="Helvetica,sans-Serif" font-size="10.00">transpose_a:False</text>
+<text xml:space="preserve" text-anchor="start" x="463.38" y="-55" font-family="Helvetica,sans-Serif" font-size="10.00">transpose_b:True</text>
+<polygon fill="#fff8e1" stroke="none" points="459.38,-28.75 459.38,-48 617.38,-48 617.38,-28.75 459.38,-28.75" />
+<text xml:space="preserve" text-anchor="start" x="463.38" y="-35.75" font-family="Helvetica,sans-Serif" font-size="10.00">[1]: f32[256, 2048] (converted #97)</text>
+<polygon fill="none" stroke="#d1d5db" points="465.38,-7 465.38,-22.75 611.38,-22.75 611.38,-7 465.38,-7" />
+<text xml:space="preserve" text-anchor="start" x="528.25" y="-12.25" font-family="Helvetica,sans-Serif" font-size="9.00">out 0</text>
+</a>
+</g>
+</g>
+
+<g id="node-157" class="node">
+<title>n157</title>
+<g id="a_node-157"><a xlink:title="__module.model.layers.0.self_attn.v_proj/ov_ext::linear/MatMul (MatMul, id: 157)">
+<polygon fill="none" stroke="#64748b" points="636.75,0 636.75,-155.25 802,-155.25 802,0 636.75,0" />
+<g id="a_ref-40-0-157-0"><a xlink:href="#node-40" xlink:title="40:out 0 → 157:in 0">
+<polygon fill="none" stroke="#d1d5db" points="643.75,-131 643.75,-148.25 738.62,-148.25 738.62,-131 643.75,-131" />
+<text xml:space="preserve" text-anchor="start" x="663.44" y="-136.25" font-family="Helvetica,sans-Serif" font-size="9.00">in 0 ← @40:0</text>
+</a>
+</g>
+<polygon fill="none" stroke="#d1d5db" points="740.62,-131 740.62,-148.25 795,-148.25 795,-131 740.62,-131" />
+<text xml:space="preserve" text-anchor="start" x="760.31" y="-137" font-family="Helvetica,sans-Serif" font-size="9.00">in 1</text>
+<polygon fill="#90caf9" stroke="none" points="637.75,-105.75 637.75,-125 801,-125 801,-105.75 637.75,-105.75" />
+<text xml:space="preserve" text-anchor="start" x="702.5" y="-112.5" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="10.00">MatMul</text>
+<text xml:space="preserve" text-anchor="start" x="641.75" y="-93.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#64748b">id: 157</text>
+<text xml:space="preserve" text-anchor="start" x="641.75" y="-74.25" font-family="Helvetica,sans-Serif" font-size="10.00">transpose_a:False</text>
+<text xml:space="preserve" text-anchor="start" x="641.75" y="-55" font-family="Helvetica,sans-Serif" font-size="10.00">transpose_b:True</text>
+<polygon fill="#fff8e1" stroke="none" points="637.75,-28.75 637.75,-48 801,-48 801,-28.75 637.75,-28.75" />
+<text xml:space="preserve" text-anchor="start" x="641.75" y="-35.75" font-family="Helvetica,sans-Serif" font-size="10.00">[1]: f32[256, 2048] (converted #156)</text>
+<polygon fill="none" stroke="#d1d5db" points="643.75,-7 643.75,-22.75 795,-22.75 795,-7 643.75,-7" />
+<text xml:space="preserve" text-anchor="start" x="709.25" y="-12.25" font-family="Helvetica,sans-Serif" font-size="9.00">out 0</text>
+</a>
+</g>
+</g>
+</g>
+</g></svg>

@@ -2,7 +2,13 @@
 
 from .api import ModelLoader, VisualizationResult, load_model, visualize
 from .graph import ConstantAnnotation, Edge, Graph, Node, TensorMetadata, Visualization
-from .passes import HideConstantConverts, HideConstants, HighlightNodes, apply_passes
+from .passes import (
+    HideConstantConverts,
+    HideConstants,
+    HighlightNodes,
+    ReferenceHighFanout,
+    apply_passes,
+)
 from .render import RenderError, render_svg
 
 __all__ = [
@@ -14,6 +20,7 @@ __all__ = [
     "HighlightNodes",
     "ModelLoader",
     "Node",
+    "ReferenceHighFanout",
     "RenderError",
     "TensorMetadata",
     "Visualization",

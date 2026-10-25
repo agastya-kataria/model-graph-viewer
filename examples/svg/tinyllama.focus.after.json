@@ -1,0 +1,430 @@
+{
+  "schema_version": 1,
+  "nodes": {
+    "40": {
+      "node_id": 40,
+      "node_type": "Multiply",
+      "name": "__module.model.layers.0.input_layernorm/aten::mul/Multiply_1",
+      "attributes": {
+        "auto_broadcast": "numpy",
+        "focus": "Neighborhood boundary may omit external edges"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            1,
+            1,
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "1": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {}
+      }
+    },
+    "41": {
+      "node_id": 41,
+      "node_type": "Constant",
+      "name": "self.model.layers.0.self_attn.q_proj.weight",
+      "attributes": {
+        "focus": "Neighborhood boundary may omit external edges"
+      },
+      "input_ports": {},
+      "output_ports": {
+        "0": {
+          "shape": [
+            2048,
+            2048
+          ],
+          "dtype": "f16"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {}
+      }
+    },
+    "42": {
+      "node_id": 42,
+      "node_type": "Convert",
+      "name": "__module.model.layers.0.self_attn.q_proj/ov_ext::linear/Convert",
+      "attributes": {
+        "destination_type": "f32",
+        "focus": "Neighborhood boundary may omit external edges"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            2048,
+            2048
+          ],
+          "dtype": "f16"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            2048,
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {}
+      }
+    },
+    "43": {
+      "node_id": 43,
+      "node_type": "MatMul",
+      "name": "__module.model.layers.0.self_attn.q_proj/ov_ext::linear/MatMul",
+      "attributes": {
+        "transpose_a": false,
+        "transpose_b": true,
+        "focus": "Selected MatMul; external edges omitted at boundary"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "1": {
+          "shape": [
+            2048,
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {}
+      }
+    },
+    "45": {
+      "node_id": 45,
+      "node_type": "Reshape",
+      "name": "__module.model.layers.0.self_attn/aten::view/Reshape",
+      "attributes": {
+        "special_zero": true,
+        "focus": "Neighborhood boundary may omit external edges"
+      },
+      "input_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "1": {
+          "shape": [
+            4
+          ],
+          "dtype": "i64"
+        }
+      },
+      "output_ports": {
+        "0": {
+          "shape": [
+            "?",
+            "?",
+            32,
+            64
+          ],
+          "dtype": "f32"
+        }
+      },
+      "visual": {
+        "border_color": null,
+        "constant_shared": false,
+        "reference_outputs": [],
+        "hidden_inputs": {}
+      }
+    }
+  },
+  "edges": [
+    {
+      "from_node": 41,
+      "from_port": 0,
+      "to_node": 42,
+      "to_port": 0,
+      "tensor": {
+        "shape": [
+          2048,
+          2048
+        ],
+        "dtype": "f16"
+      }
+    },
+    {
+      "from_node": 40,
+      "from_port": 0,
+      "to_node": 43,
+      "to_port": 0,
+      "tensor": {
+        "shape": [
+          "?",
+          "?",
+          2048
+        ],
+        "dtype": "f32"
+      }
+    },
+    {
+      "from_node": 42,
+      "from_port": 0,
+      "to_node": 43,
+      "to_port": 1,
+      "tensor": {
+        "shape": [
+          2048,
+          2048
+        ],
+        "dtype": "f32"
+      }
+    },
+    {
+      "from_node": 43,
+      "from_port": 0,
+      "to_node": 45,
+      "to_port": 0,
+      "tensor": {
+        "shape": [
+          "?",
+          "?",
+          2048
+        ],
+        "dtype": "f32"
+      }
+    }
+  ],
+  "view": {
+    "nodes": {
+      "40": {
+        "node_id": 40,
+        "node_type": "Multiply",
+        "name": "__module.model.layers.0.input_layernorm/aten::mul/Multiply_1",
+        "attributes": {
+          "auto_broadcast": "numpy",
+          "focus": "Neighborhood boundary may omit external edges"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              1,
+              1,
+              2048
+            ],
+            "dtype": "f32"
+          },
+          "1": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "visual": {
+          "border_color": null,
+          "constant_shared": false,
+          "reference_outputs": [],
+          "hidden_inputs": {}
+        }
+      },
+      "43": {
+        "node_id": 43,
+        "node_type": "MatMul",
+        "name": "__module.model.layers.0.self_attn.q_proj/ov_ext::linear/MatMul",
+        "attributes": {
+          "transpose_a": false,
+          "transpose_b": true,
+          "focus": "Selected MatMul; external edges omitted at boundary"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          },
+          "1": {
+            "shape": [
+              2048,
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          }
+        },
+        "visual": {
+          "border_color": "red",
+          "constant_shared": false,
+          "reference_outputs": [],
+          "hidden_inputs": {
+            "1": {
+              "source_id": 41,
+              "tensor": {
+                "shape": [
+                  2048,
+                  2048
+                ],
+                "dtype": "f32"
+              },
+              "shared": false,
+              "convert_id": 42,
+              "stored_dtype": "f16",
+              "source_shared": false
+            }
+          }
+        }
+      },
+      "45": {
+        "node_id": 45,
+        "node_type": "Reshape",
+        "name": "__module.model.layers.0.self_attn/aten::view/Reshape",
+        "attributes": {
+          "special_zero": true,
+          "focus": "Neighborhood boundary may omit external edges"
+        },
+        "input_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              2048
+            ],
+            "dtype": "f32"
+          },
+          "1": {
+            "shape": [
+              4
+            ],
+            "dtype": "i64"
+          }
+        },
+        "output_ports": {
+          "0": {
+            "shape": [
+              "?",
+              "?",
+              32,
+              64
+            ],
+            "dtype": "f32"
+          }
+        },
+        "visual": {
+          "border_color": null,
+          "constant_shared": false,
+          "reference_outputs": [],
+          "hidden_inputs": {}
+        }
+      }
+    },
+    "edges": [
+      {
+        "from_node": 40,
+        "from_port": 0,
+        "to_node": 43,
+        "to_port": 0,
+        "tensor": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "representation": "edge"
+      },
+      {
+        "from_node": 43,
+        "from_port": 0,
+        "to_node": 45,
+        "to_port": 0,
+        "tensor": {
+          "shape": [
+            "?",
+            "?",
+            2048
+          ],
+          "dtype": "f32"
+        },
+        "representation": "edge"
+      }
+    ]
+  },
+  "rendering": {
+    "label_detail": "compact",
+    "rendered_edges": 2,
+    "referenced_edges": 0
+  }
+}

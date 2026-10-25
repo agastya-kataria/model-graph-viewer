@@ -3,19 +3,18 @@
 [![Tests](https://github.com/agastya-kataria/model-graph-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/agastya-kataria/model-graph-viewer/actions/workflows/ci.yml)
 
 A Python library and CLI for visualizing OpenVINO computational graphs as SVGs. It preserves
-operation identity, tensor metadata, and exact input/output port connections while applying ordered
-visualization passes. The model itself is never modified.
+operation identity, tensor metadata, and exact port connections while applying ordered visualization
+passes. The original model is never modified.
 
-Start with the [branching example](examples/svg/branching.after.svg) or the TinyLlama
-[before](examples/svg/tinyllama.focus.before.svg) and [after](examples/svg/tinyllama.focus.after.svg)
-detail views. Download SVGs and open them in a browser if GitHub cannot preview their size.
+Start with the TinyLlama fan-out detail [before](examples/svg/tinyllama.fanout.focus.before.svg) and
+[after](examples/svg/tinyllama.fanout.focus.after.svg), then the
+[complete improved graph](examples/svg/tinyllama.after.svg). Download SVGs and open them in a browser
+to use the source links. Each new render also writes JSON containing names, attributes, and connectivity.
 
 ## Install and run
 
-Use Python 3.11–3.13. Install the **Graphviz system executable** as well as the Python dependencies.
-On macOS use `brew install graphviz`; on Debian/Ubuntu use `sudo apt install graphviz`.
-
-Clone the repository, then install and run:
+Use Python 3.11–3.13. Install the **Graphviz system executable** as well as the Python dependencies:
+`brew install graphviz` on macOS, or `sudo apt install graphviz` on Debian/Ubuntu.
 
 ```sh
 git clone https://github.com/agastya-kataria/model-graph-viewer.git
@@ -26,99 +25,168 @@ python -m pip install -r requirements.lock
 python -m pip install --no-deps -e .
 dot -V
 
+# No passes: original topology, compact labels, graph.json metadata.
 model-graph-viewer --model examples/models/mlp.xml --output graph.svg
+
+# Select transformations explicitly; their order is preserved.
 model-graph-viewer --model examples/models/branching.xml --output simplified.svg \
   --passes hide-constants,highlight --highlight projection --stats stats.json
 ```
 
-The small models are included; no network model download is needed for this quick start or the tests.
-`requirements.lock` pins the runtime and development packages used for verification. For an unpinned
-development installation, `python -m pip install -e '.[dev]'` is also supported. The separate optional
-`inspection` extra is only needed to reproduce the Netron screenshot.
+The two small models are included; quick-start commands and tests need no model download.
+`requirements.lock` pins the verified runtime and development dependencies. An unpinned development
+installation with `python -m pip install -e '.[dev]'` is also supported.
+
+## Readability changes
+
+The earlier TinyLlama result removed many auxiliary Constant/Convert nodes, but still contained long
+names, wide attribute rows, and shared values connected to operations across many decoder layers.
+Eight surviving source operations have more than three outgoing connections, accounting for 250 of
+the simplified graph's 2,028 connections. Five of those sources each have 44 outgoing connections.
+These long connections enlarge the layout and make the main computation difficult to follow.
+
+The revised visualization addresses those problems in three ways:
+
+- Compact labels omit node names and verbose attributes, retain operation types and IDs, and display
+  scalar attributes whose complete `key: value` text is at most 40 characters. Hidden Constant dtype,
+  shape, original input index, and sharing markers remain visible. JSON retains full metadata.
+- `reference-high-fanout` replaces drawn connections from qualifying sources with matching port
+  references. `out 0 → @40:0 (4 uses)` declares a source; `in 0 ← @40:0` identifies its use at an exact
+  consumer input. Click a reference to jump to its source; browser Back returns to the consumer.
+  Every logical connection remains in the graph and JSON.
+- Large graphs with references use polyline routing around unrelated operation boxes. Graphs above
+  1,000 operations without references retain straight routing because unreduced polyline layout is
+  expensive. Large graphs also bound Graphviz optimization; each benchmark records its actual settings.
+
+The fan-out pass counts outgoing **connections per operation**, across its output ports. The default
+threshold is three: exactly three connections stay drawn; four or more are referenced. Multiple
+connections to one consumer count separately. Each output uses its own token, so a multi-output
+operation's values remain distinct. Run this pass after structural hiding passes to select sources
+using the remaining graph. Reapplying it recomputes markers without changing logical connectivity.
+
+The [fan-out detail](examples/svg/tinyllama.fanout.focus.after.svg) uses real node 40 and all four of
+its consumers. Both versions retain five operations and four logical connections; only their visual
+representation changes. A visible caption identifies six omitted external boundary connections.
+The detail JSON describes that prepared neighborhood; full-model JSON describes the complete model.
 
 ## CLI
 
-`python -m model_graph_viewer` and `model-graph-viewer` use the same API.
+`python -m model_graph_viewer` and `model-graph-viewer` use the same public API.
 
 | Option | Behavior |
 | --- | --- |
-| `--model PATH` | OpenVINO `.xml`; required weights are read from its adjacent `.bin` |
-| `--output PATH` | Exact destination filename, ending in `.svg`; parent directories are created |
-| `--passes LIST` | Comma-separated pass names, executed in this exact order; default is no passes |
-| `--highlight NAME` | Exact name for the highlighting pass; repeat for multiple names |
-| `--stats PATH` | Write before/after graph sizes and stage times as JSON |
-| `--render-timeout SECONDS` | Maximum Graphviz execution time, default 300 seconds |
+| `--model PATH` | OpenVINO `.xml`; adjacent `.bin` is read when required |
+| `--output PATH` | SVG destination; parent directories are created |
+| `--passes LIST` | Comma-separated names, executed in order; default: no passes |
+| `--highlight NAME` | Exact name for `highlight`; repeat for multiple names |
+| `--fanout-threshold N` | Positive integer; requires `reference-high-fanout`; default: 3 |
+| `--label-detail compact\|full` | Default: compact; full includes names and all ordinary attributes |
+| `--metadata PATH` | JSON destination; default: SVG path with suffix changed to `.json` |
+| `--stats PATH` | Separate JSON with logical/drawn/referenced counts and stage timings |
+| `--render-timeout SECONDS` | Maximum Graphviz execution time; default: 300 seconds |
 
-The supported passes are:
+Supported passes:
 
-- `highlight`: red borders on **all** matching names, including duplicates. Other nodes are unchanged.
-- `hide-constants`: replace Constant connections with destination-port annotations such as
-  `[1]: f32[4, 4] (shared: 2)`. Shared IDs identify the same Constant across consumer operations.
-- `hide-constant-converts`: summarize direct `Constant → Convert` inputs, preserving stored/effective
-  dtypes, effective shape, source ID, and conversion ID. Run this **before** `hide-constants`.
+- `highlight`: red borders on all exact name matches, including duplicates; other nodes are unchanged.
+- `hide-constants`: replace Constant connections with consumer input annotations such as
+  `[1]: f32[4, 4] (shared: 2)`. The shared ID identifies the same Constant across consumers.
+- `hide-constant-converts`: summarize direct `Constant → Convert` branches while preserving source
+  and conversion IDs, stored/effective dtypes, and effective shape. Run before `hide-constants`.
+- `reference-high-fanout`: mark high-fan-out source outputs for reference rendering; no nodes or
+  logical edges are deleted.
 
-Highlighting is opt-in and requires at least one `--highlight`. Unmatched names do nothing.
-Selecting no passes produces the original topology. Unknown passes, invalid inputs, missing weights,
-and rendering failures produce a nonzero exit code and an error on stderr. Failed SVG rendering leaves
-an existing output intact. SVG and statistics paths cannot alias the input model or its weights,
-including symbolic links and hard links. Statistics are written atomically.
+```sh
+model-graph-viewer --model models/tinyllama/openvino_model.xml --output tinyllama.svg \
+  --passes hide-constant-converts,hide-constants,reference-high-fanout \
+  --fanout-threshold 3 --metadata tinyllama.metadata.json --stats tinyllama.stats.json
 
-## Python API
+# Full labels without transformation passes.
+model-graph-viewer --model examples/models/mlp.xml --output full.svg --label-detail full
+```
 
-Use the individual stages when inspecting or modifying the graph:
+Highlighting requires at least one name; unmatched names do nothing. A threshold option requires the
+fan-out pass. Invalid arguments, unsupported models, missing weights, and rendering failures return
+nonzero status with an error on stderr. SVG, metadata, and statistics destinations must be distinct
+and cannot alias input XML/BIN files, including symbolic links and hard links. The SVG/JSON pair is
+staged before replacement; failed generation preserves an existing pair. Statistics are written
+atomically after visualization succeeds.
+
+## Python API and metadata
 
 ```python
 from model_graph_viewer import (
-    HideConstants, HighlightNodes, apply_passes, load_model, render_svg,
+    HideConstantConverts, HideConstants, ReferenceHighFanout, visualize,
 )
-
-graph = load_model("examples/models/branching.xml")
-original = graph.copy()  # optional: preserve a separate visualization variant
-apply_passes(graph, [HideConstants(), HighlightNodes(["projection"])])
-render_svg(original, "original.svg")
-render_svg(graph, "simplified.svg", timeout=300)
-```
-
-Or use the same convenience function as the CLI:
-
-```python
-from model_graph_viewer import HideConstants, visualize
 
 result = visualize(
-    "examples/models/mlp.xml", "mlp.svg",
-    passes=[HideConstants()], render_timeout=300,
+    "models/tinyllama/openvino_model.xml", "tinyllama.svg",
+    passes=[HideConstantConverts(), HideConstants(), ReferenceHighFanout(threshold=3)],
+    label_detail="compact", render_timeout=300,
 )
-print(result.before_nodes, result.after_nodes, result.timings)
+print(result.after_edges, result.rendered_edges, result.referenced_edges)
+print(result.metadata_path, result.timings)
 ```
 
-`VisualizationResult` includes `output_path`, `before_nodes`, `before_edges`, `after_nodes`,
-`after_edges`, and `timings`. Timing keys are `load_construct_seconds`, `transform_seconds`, and
-`render_seconds`. All use wall-clock seconds. Passes mutate and return the detached graph; they do
-not retain or mutate OpenVINO objects.
+`VisualizationResult` contains `output_path`, `metadata_path`, before/after logical node and edge
+counts, `rendered_edges`, `referenced_edges`, and wall-clock stage timings. Timing keys are
+`load_construct_seconds`, `transform_seconds`, and `render_seconds`. References reduce drawn edges;
+they do not reduce `after_edges`.
+
+Use `load_model`, `apply_passes`, and `render_svg` separately when inspecting the graph. Passes mutate
+the detached graph in place. `graph.copy()` creates an independent variant. `render_svg` also accepts
+`label_detail`, `metadata`, and `timeout`, and returns the SVG path. Its metadata describes the graph
+supplied to it. Use `visualize` to retain the original model graph before transformations as well.
+
+The JSON schema has `schema_version: 1` and these fields:
+
+| Field | Meaning |
+| --- | --- |
+| `nodes` | Original nodes keyed by string node ID, including names, attributes, ports, and visualization metadata |
+| `edges` | Original exact source/output/destination/input connections and tensor metadata |
+| `view.nodes` | Nodes retained after passes, including hidden Constant annotations and reference-output markers |
+| `view.edges` | All remaining logical connections, each with `representation: "edge"` or `"reference"` |
+| `rendering` | Label detail and counts of drawn and referenced edges |
+
+IDs remain integers inside node/edge records; JSON object keys are strings. Shape `null` means
+unavailable metadata, `"?"` means dynamic rank, and `[]` means a scalar. No tensor values are exported.
+Names remain available in SVG tooltips without affecting compact label width.
+
+```python
+import json
+
+with open("tinyllama.json") as stream:
+    metadata = json.load(stream)
+node_id = 40  # Read the ID from the SVG.
+print(metadata["nodes"][str(node_id)]["name"])
+references = [edge for edge in metadata["view"]["edges"]
+              if edge["representation"] == "reference" and edge["from_node"] == node_id]
+```
+
+View edge endpoints use the same operation IDs as the original mapping. `view.nodes` additionally
+records the transformed display state; original nodes removed by hiding remain in root `nodes`.
 
 ## Architecture and extension points
 
-The pipeline is **OpenVINO adapter → graph → ordered passes → Graphviz renderer**.
-See [the design walkthrough](docs/design.md) for invariants, complexity, tradeoffs, and the optional pass.
+The pipeline is **OpenVINO adapter → detached graph → ordered passes → Graphviz SVG + metadata**.
+The [design walkthrough](docs/design.md) explains invariants, complexity, and tradeoffs.
 
 | Component | Responsibility |
 | --- | --- |
-| `graph.py` | Dataclasses, node identity, port tables, indexed connectivity, safe mutation, validation |
-| `openvino_loader.py` | Read IR; translate framework operations/ports/metadata into ordinary Python data |
-| `passes.py` | In-place transformations and pass registration; no framework dependencies |
-| `render.py` | Escaped HTML labels, port attachment points, styles, bounded large-graph layout, SVG output |
-| `api.py` / `cli.py` | Compose the stages, collect timings, parse CLI configuration, report failures |
+| Graph | Operation identity, indexed port-aware connectivity, validated mutation, visualization metadata |
+| OpenVINO adapter | Translate operations, attributes, ports, and tensor metadata into ordinary Python data |
+| Passes | Independent, ordered graph transformations and reference-selection policy |
+| Renderer / metadata | Label detail, directed connections/references, styles, SVG and original/view snapshots |
+| API / CLI | Compose stages, validate destinations, configure passes, collect timings, report errors |
 
-Node IDs are separate from names; edges include both port indices. Input/output port tables survive
-hiding connections. Shapes distinguish unavailable metadata (`None`), dynamic rank (`"?"`), scalars
-(`()`), and dimensions such as `(1, "?", "2..8", "2..?")`. Dtypes use OpenVINO's portable names,
-such as `f16`, `f32`, and `i64`. The core also permits absent dtypes.
+IDs are separate from names. Runtime positional ports are preserved, including parallel connections
+between the same node pair. Dynamic bounds, unavailable metadata, unused ports, disconnected model
+inputs, stateful sinks, and unknown operation types are supported.
 
-Add a pass by implementing `apply(graph) -> graph`; no parser or renderer changes are needed:
+Add a pass by implementing `apply(graph) -> graph`; no framework objects are required:
 
 ```python
-from model_graph_viewer import Graph, apply_passes
-from model_graph_viewer.passes import create_pass, register_pass
+from model_graph_viewer import Graph
+from model_graph_viewer.passes import register_pass
 
 class HighlightType:
     def __init__(self, operation="MatMul"):
@@ -131,113 +199,106 @@ class HighlightType:
         return graph
 
 register_pass("highlight-type", HighlightType)
-# With a graph loaded as above:
-apply_passes(graph, [create_pass("highlight-type", operation="MatMul")])
 ```
 
-The registry accepts configurable factories. CLI integration for new pass-specific flags belongs in
-the CLI; existing loaders and rendering remain unchanged. Built-in structural passes have no extra
-options. Duplicate registrations are rejected.
+The registry accepts configurable factories; duplicate registrations are rejected. Add CLI flags for
+new pass-specific options in the CLI. Existing parsers and generic rendering remain independent of
+the pass. To support another model format, implement `load(path) -> Graph` following `ModelLoader`
+and supply it to `load_model(..., loader=...)` or `visualize(..., loader=...)`. Populate port tables
+and detached metadata, then validate the graph. ONNX is an extension point, not an implemented loader.
 
-To support another format, implement `load(path) -> Graph` following the `ModelLoader` protocol and
-pass the instance to `load_model(path, loader=...)` or `visualize(..., loader=...)`. Populate explicit
-port tables and detached tensor metadata, then validate the graph. Existing passes and rendering
-work without knowing the originating framework. ONNX loading is an extension point, not an
-implemented feature.
+## Models and reproduction
 
-## Models and reproducible visualizations
-
-| Model | What it demonstrates | SVGs |
+| Model | Demonstrates | SVG variants |
 | --- | --- | --- |
-| MLP | Starter's MatMul/Add structure with a corrected `(1, 1024)` bias | [Before](examples/svg/mlp.before.svg), [after](examples/svg/mlp.after.svg) |
-| Branching | Dynamic batch, Split outputs, shared weights, duplicate `projection` names, repeated node-pair connections | [Before](examples/svg/branching.before.svg), [after](examples/svg/branching.after.svg) |
-| TinyLlama-1.1B-Chat-v1.0 | Real large, stateful fp16 model and converted-weight simplification | [Before](examples/svg/tinyllama.before.svg), [after](examples/svg/tinyllama.after.svg) |
+| MLP | Starter MatMul/Add with correctly broadcast `(1, 1024)` bias | [Original](examples/svg/mlp.before.svg), [compact](examples/svg/mlp.compact.svg), [improved](examples/svg/mlp.after.svg) |
+| Branching | Dynamic batch, Split outputs, shared weights, duplicate names, repeated connections | [Original](examples/svg/branching.before.svg), [compact](examples/svg/branching.compact.svg), [improved](examples/svg/branching.after.svg) |
+| TinyLlama-1.1B-Chat-v1.0 | Real stateful fp16 model, converted weights, long shared connections | [Original](examples/svg/tinyllama.before.svg), [compact](examples/svg/tinyllama.compact.svg), [improved](examples/svg/tinyllama.after.svg) |
 
-The first two are deterministic, generated neural-network examples, not pretrained models.
-The generator uses fixed random seeds; its XML and weights were checked for byte-for-byte reproduction.
+The first two are deterministic generated examples, not pretrained networks. XML/BIN files are
+included. They have no surviving fan-out above three, so their compact and improved variants agree.
+
+TinyLlama uses the official [OpenVINO fp16 export](https://huggingface.co/OpenVINO/TinyLlama-1.1B-Chat-v1.0-fp16-ov)
+at revision `88a9e6bbe7f9f8cf4e61ac96eed57ec164ad46f5`. Source URLs, sizes, and SHA-256 digests are
+in [model_sources.json](examples/model_sources.json). The downloader requires `curl` and about 2.2 GB
+of disk space; it resumes partial downloads and verifies both files. Weights are ignored by Git.
 
 ```sh
 python scripts/build_examples.py
-python scripts/benchmark.py --models small
-```
-
-TinyLlama uses the official [OpenVINO fp16 export](https://huggingface.co/OpenVINO/TinyLlama-1.1B-Chat-v1.0-fp16-ov),
-pinned to revision `88a9e6bbe7f9f8cf4e61ac96eed57ec164ad46f5`. The exact source, sizes, and SHA-256
-digests are in [model_sources.json](examples/model_sources.json). Downloading requires `curl` and
-about 2.2 GB of disk space. Downloads verify HTTPS, resume partial files, and check both hashes.
-Large weights are ignored by Git.
-
-```sh
 python scripts/download_tinyllama.py
-model-graph-viewer --model models/tinyllama/openvino_model.xml --output tinyllama.svg \
-  --passes hide-constant-converts,hide-constants
-python scripts/render_focus.py
 python scripts/benchmark.py --models all --include-synthetic --repeats 1
+python scripts/render_focus.py
+python scripts/render_fanout_focus.py
 ```
 
-The final command reproduces all benchmarked SVGs and overwrites `benchmarks/results.json` with new
-measurements. Use `--output PATH` and `--svg-directory PATH` to preserve the supplied results.
-`--repeats N` retains every measured run in JSON; each variant's SVG is replaced on each repetition.
+These commands reproduce three variants per real model, JSON sidecars, both detail views, the
+5,100-node synthetic stress SVG, and benchmark measurements. The original Constant/Convert detail
+[before](examples/svg/tinyllama.focus.before.svg)/[after](examples/svg/tinyllama.focus.after.svg) remains
+available. Each detail explicitly identifies its omitted boundary connections.
 
-### Optional improvement and Netron inspection
+The benchmark overwrites `benchmarks/results.json` and generated SVG/JSON files. Use `--output PATH`
+and `--svg-directory PATH` to preserve supplied results. `--repeats N` records every run, while each
+variant's files are replaced on each repetition. The earlier submitted TinyLlama visualization is
+preserved as [tinyllama.previous.svg](examples/svg/tinyllama.previous.svg), a historical comparison
+artifact rather than output from the current renderer.
 
-The pinned export contains 428 direct Constant-to-Convert branches. In Netron, Constant inputs are
-already embedded in operation boxes, but the conversion nodes and their connections remain. The
-[captured view](docs/netron-tinyllama.png) shows repeated Convert branches around the main arithmetic
-and many crossing connections. The optional pass removes these auxiliary display nodes while keeping
-their effective tensor description and conversion provenance at the consumer.
+The [Netron screenshot](docs/netron-tinyllama.png) documents the original inspection. Its Constant-to-
+Convert branches motivated the earlier optional pass; the pinned model has 428 direct branches.
+To reproduce that inspection, install `'.[inspection]'`, run
+`python -m playwright install chromium`, then `python scripts/inspect_netron.py`.
 
-The [focused before](examples/svg/tinyllama.focus.before.svg) and
-[focused after](examples/svg/tinyllama.focus.after.svg) SVGs show the first attention query projection:
-five nodes/four edges become three nodes/two edges. Boundary connections omitted from this detail view
-are explicitly labeled; the full SVGs include the complete model graph.
+## Measured performance and verification
 
-The Netron screenshot examines the original XML topology without loading tensor values:
+[results.json](benchmarks/results.json) records actual load/construction, snapshot/transformation,
+and SVG/JSON export times; graph counts; canvas geometry; operation widths; file sizes; commands;
+dependency versions; and hardware. Real-model variants separate full original topology, compact
+Constant/Convert hiding, and the additional effect of fan-out references. The synthetic stress fixture
+retains 5,100 operations after hiding one Constant; it is not an OpenVINO loading benchmark.
 
-```sh
-python -m pip install -e '.[inspection]'
-python -m playwright install chromium
-python scripts/inspect_netron.py
-```
+Measured on Apple M4, 10 logical CPUs, 16 GiB RAM, macOS 27.0.1 arm64, Python 3.12.14,
+OpenVINO 2026.0.0, NumPy 2.4.6, Python Graphviz 0.21, and Graphviz `dot` 16.1.0:
 
-This optional script uses a temporary XML-only copy, localhost, and a fresh browser; external telemetry
-requests are blocked. To explore manually, open the pinned XML in Netron and inspect the first layer's
-normalization and query-projection branches.
+| Model / variant | Operations / logical edges | Drawn / referenced edges | Load (s) | Snapshot + passes (s) | SVG + JSON export (s) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| MLP / original | 6 / 5 | 5 / 0 | 0.08671 | 0.00009 | 0.08495 |
+| MLP / compact | 4 / 3 | 3 / 0 | 0.00238 | 0.00011 | 0.06200 |
+| MLP / improved | 4 / 3 | 3 / 0 | 0.00222 | 0.00012 | 0.06599 |
+| Branching / original | 9 / 11 | 11 / 0 | 0.00257 | 0.00009 | 0.06307 |
+| Branching / compact | 7 / 8 | 8 / 0 | 0.00266 | 0.00016 | 0.05731 |
+| Branching / improved | 7 / 8 | 8 / 0 | 0.00264 | 0.00019 | 0.07189 |
+| TinyLlama / original | 3,216 / 3,789 | 3,789 / 0 | 0.22517 | 0.02803 | 9.00939 |
+| TinyLlama / compact | 1,529 / 2,028 | 2,028 / 0 | 0.23134 | 0.05723 | 3.98579 |
+| TinyLlama / improved | 1,529 / 2,028 | 1,778 / 250 | 0.20849 | 0.05072 | 1.01339 |
+| Synthetic stress / improved | 5,100 / 5,050 | 5,050 / 0 | 0.02266 | 0.10497 | 3.71383 |
 
-## Measured performance
+| TinyLlama visualization | Canvas width × height (pt) | Median operation width (pt) | Drawn edges |
+| --- | ---: | ---: | ---: |
+| Previous submission | 12,038 × 170,016 | 259.75 | 2,028 |
+| Current original | 20,671 × 145,845 | 219.25 | 3,789 |
+| Compact | 6,542 × 148,862 | 109.00 | 2,028 |
+| Improved with references | 1,975 × 152,284 | 109.00 | 1,778 |
 
-Measured on Apple M4, 10 logical CPUs, 16 GiB RAM, macOS 27.0.1 arm64; Python 3.12.14,
-OpenVINO 2026.0.0, NumPy 2.4.6, Python Graphviz 0.21, and Graphviz `dot` 16.1.0.
-Exact environment, commands, input hashes, layout settings, SVG counts, and raw wall times are in
-[results.json](benchmarks/results.json).
+Compared with the earlier submission, the improved graph is 83.6% narrower and 10.4% shorter.
+Compared with compact labels alone, references make the canvas 69.8% narrower but 2.3% taller.
+The graph remains tall; the improvement concerns width, long shared connections, and source navigation.
+The improved files contain 4,164,347 SVG bytes and 5,394,119 JSON bytes. Metadata includes both original
+and transformed graphs, so its size is an explicit cost of retaining complete context.
 
-| Model / variant | Rendered nodes / edges | Load + construct (s) | Passes (s) | Render + export (s) |
-| --- | ---: | ---: | ---: | ---: |
-| MLP / baseline | 6 / 5 | 0.13956 | 0.00003 | 0.10631 |
-| MLP / improved | 4 / 3 | 0.00386 | 0.00013 | 0.09676 |
-| Branching / baseline | 9 / 11 | 0.00449 | 0.00004 | 0.10006 |
-| Branching / improved | 7 / 8 | 0.00430 | 0.00018 | 0.10559 |
-| TinyLlama / baseline | 3,216 / 3,789 | 0.41779 | 0.01216 | 15.08915 |
-| TinyLlama / improved | 1,529 / 2,028 | 0.41075 | 0.04766 | 6.58634 |
-| Synthetic stress / improved | 5,100 / 5,050 | 0.04115 | 0.06840 | 4.35199 |
+Each run independently loads its model in one process without warm-up. First-use imports and OS
+caching affect timings. Transformation time includes the original metadata snapshot and validation;
+render time includes DOT generation, Graphviz layout, and both files. These are individual
+measurements, not performance guarantees. Package verification was also active on the machine;
+shared CPU/I/O can affect wall times. Graphviz layout remains the main bottleneck.
 
-These are single runs, not averages or performance guarantees. Each variant independently reloads
-its model in the same process. The first load includes lazy imports; later runs may benefit from OS
-caches. Pass time includes validation. Render time includes DOT creation, layout, and disk output.
-The synthetic case constructs a detached graph with 5,101 nodes/5,100 edges; its construction time
-does **not** measure OpenVINO loading. One shared Constant is hidden, leaving over 5,000 rendered nodes.
+After timing, the benchmark independently recovers exact endpoints from drawn-edge tooltips and
+reference IDs/links, verifies source markers/use counts, and compares every logical edge with the JSON
+snapshots. It also compares node identities and tensor metadata. This verifies connectivity instead
+of assuming the number of drawn edges equals the number of graph connections.
 
-SVG XML was parsed to verify exact node and edge counts against each measured graph. The full graph
-is retained in every baseline/improved example. The synthetic SVG is also included as a reproducible
-[stress artifact](examples/svg/synthetic_5101.after.svg).
+Historical timings in the earlier submission used straight routing and no JSON export;
+they are not directly comparable to the current benchmark. Geometry varies with Graphviz and fonts.
 
-Default Graphviz layout proved impractical for the full TinyLlama graph; the interrupted attempt is
-recorded separately in [interrupted_attempt.json](benchmarks/interrupted_attempt.json), without an
-invented completion time. The final renderer uses bounded optimization and straight edge routing
-above 1,000 nodes. This made layout practical but long edges can cross unrelated nodes. Graph
-processing is inexpensive relative to layout; focused views are substantially easier to read.
-
-## Tests and package verification
+## Tests
 
 ```sh
 python -m pytest -q
@@ -246,33 +307,37 @@ ruff format --check src tests scripts starter_code.py
 python -m build --wheel
 ```
 
-The suite covers independent graph/pass behavior, shared constants, preserved port indices, shapes,
-duplicate names, mutation validity, pass ordering, actual OpenVINO parsing, unchanged model metadata,
-and both API/CLI end-to-end rendering. SVG tests parse structure and styles, not pixel snapshots.
-Rendering failure tests cover missing `dot`, invalid output, label escaping, and timeout cleanup.
-Tests use local models and require no network access or TinyLlama download.
+Tests cover graph invariants, parsing, shared Constants, conversion provenance, fan-out thresholds,
+multiple source/destination ports, duplicate names, shapes, ordering, idempotence, SVG references,
+metadata snapshots, escaping, output protection, and API/CLI integration. Small real OpenVINO models
+exercise the whole pipeline without network access. Failure tests cover missing `dot`, timeouts,
+invalid destinations, and output staging. No pixel-exact SVG snapshots are required.
 
-Clean wheel installations were checked outside the source directory; exact Python versions, test
-outcomes, package origins, and CLI checks are recorded in [verification.json](docs/verification.json).
-The [requirements audit](docs/requirements-audit.md) maps the PDF's requirements to implementation,
-tests, examples, and measured evidence. GitHub Actions runs the tests on Python 3.11–3.13 and checks
-linting, formatting, and package builds.
+GitHub Actions tests built packages on Python 3.11–3.13 and checks linting/formatting.
+[verification.json](docs/verification.json) records installed-wheel verification;
+the [requirements audit](docs/requirements-audit.md) maps the assignment and revision to evidence.
+The recorded clean-wheel matrix passed all 230 tests on each of Python 3.11, 3.12, and 3.13.
+To reproduce the clean-wheel matrix outside the source tree, run `python scripts/verify_package.py`.
+It requires `uv` and available or downloadable Python 3.11–3.13 interpreters, builds the wheel, installs
+it into temporary environments, and runs the tests and CLI checks from outside the repository.
 
 ## Known limitations
 
-- OpenVINO IR is the only implemented model format. Model loading may map/read weights internally;
-  the detached graph and transformations never copy their tensor contents.
-- Nested If/Loop bodies remain represented by their parent operation. Only tensor/data connections
-  are drawn; control-ordering dependencies are not additional edges. ReadValue/Assign sinks and
-  variable IDs are preserved.
-- Dynamic bounds are preserved, but relationships between framework-specific symbolic dimensions
-  are not. Missing metadata is displayed explicitly rather than guessed.
-- The optional pass handles only direct Constant-to-Convert patterns. Its documented order matters,
-  and it deliberately does not evaluate tensors or simplify arbitrary runtime conversions.
-- Large SVGs are static, tall, and potentially slow to navigate. Straight routing trades readability
-  for bounded layout cost. Graphviz versions/fonts may change geometry; exact SVG bytes are not a
-  cross-platform contract. Neighborhood selection and hierarchical block views are useful extensions.
+- OpenVINO IR is the only input format. The runtime may read/map weights internally; detached graph
+  processing never copies tensor values.
+- Nested If/Loop bodies stay within their parent operation. Data connections are represented;
+  additional control-ordering edges are not synthesized. Stateful ReadValue/Assign operations remain.
+- Dynamic bounds are retained, but framework-specific symbolic equality relationships are not.
+- Constant/Convert hiding handles direct branches only; it does not evaluate weights or bypass
+  arbitrary runtime conversions. Its order relative to Constant hiding matters.
+- References require matching tokens or source links instead of following every connection visually.
+  They do not constrain layout ranks, so a source can appear in a separate component. All logical
+  connections remain available through SVG references and JSON. Large static graphs remain tall;
+  details are easier for local investigation.
+- Large graphs without references use straight connections that can cross unrelated boxes. The
+  reference-enabled layout uses obstacle-aware polylines, at the cost of a different layout policy.
+- Output replacement failures are rolled back where possible; interruption between filesystem
+  replacements cannot provide a cross-file transaction. Graphviz versions/fonts may change geometry.
+  Decoder-block grouping and interactive hierarchy are possible extensions.
 
 `starter_code.py` remains runnable as the supplied starting example, with its bias shape corrected.
-The package extends its dataclass/Graphviz approach with explicit port tables, transformations,
-framework separation, and rendering that tolerates operation types not known in advance.
